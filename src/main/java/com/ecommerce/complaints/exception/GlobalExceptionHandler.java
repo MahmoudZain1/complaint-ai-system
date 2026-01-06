@@ -1,0 +1,54 @@
+package com.ecommerce.complaints.exception;
+
+import com.ecommerce.complaints.model.vto.ErrorVTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.ecommerce.complaints.model.enums.ComplaintErrors.INVALID_EMAIL;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorVTO> handleBusinessException(BusinessException ex, WebRequest request) {
+        ErrorVTO error = ErrorVTO.builder()
+                .error(ex.getErrorCode())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+        return new ResponseEntity<>(error, ex.getHttpStatus());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorVTO> handleValidationException(
+            MethodArgumentNotValidException ex, WebRequest request) {
+        List<String> validationErrors = ex.getBindingResult()
+                .getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage()).collect(Collectors.toList());
+
+        boolean isEmailError = ex.getBindingResult()
+                .getFieldErrors().stream()
+                .anyMatch(error -> "customerEmail".equals(error.getField()));
+        ErrorVTO error = ErrorVTO.builder()
+        .error(isEmailError ? INVALID_EMAIL.name() : "VALIDATION_ERROR")
+        .message("Validation failed")
+        .timestamp(LocalDateTime.now())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .details(validationErrors)
+        .status(HttpStatus.BAD_REQUEST.value()).build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+
+}
