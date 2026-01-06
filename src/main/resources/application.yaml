@@ -1,0 +1,70 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: Complaints Service
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/complaints_db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        acknowledge-mode: auto
+        concurrency: 3
+        max-concurrency: 10
+        prefetch: 5
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 2000ms
+          multiplier: 2
+
+  ai:
+    openai:
+      api-key: ${API_KEY}
+      base-url: ${BASE_URL}
+      chat:
+        options:
+          model: ${MODEL}
+          temperature: 0.7
+      embedding:
+        enabled: false
+
+
+    transformers:
+      embedding:
+        enabled: true
+        onnx:
+          model-uri: ${TE_MODEL}
+
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 384
+        max-document-batch-size: 10000
+        initialize-schema: true
+
+
+logging:
+  level:
+    com.ecommerce.complaints: DEBUG
+    org.springframework.ai: DEBUG
