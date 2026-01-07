@@ -1,7 +1,7 @@
 package com.ecommerce.complaints.ai.tools;
 
 import com.ecommerce.complaints.model.entity.Complaint;
-import com.ecommerce.complaints.repoistory.api.ComplaintRepository;
+import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;

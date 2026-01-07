@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 public class PoliciesAdapterConfig {
 
-    @Value("classpath:/policies/Delivery Policy.txt")
+    @Value("classpath:/documents/Delivery-Policy.md")
     private Resource deliveryPolicy;
 
-    @Value("classpath:/policies/return-policy.txt")
+    @Value("classpath:/documents/return-policy.md")
     private Resource returnPolicy;
 }

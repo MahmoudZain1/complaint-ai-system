@@ -9,7 +9,7 @@ import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
 import com.ecommerce.complaints.model.enums.Sentiment;
 import com.ecommerce.complaints.model.vto.*;
-import com.ecommerce.complaints.repoistory.api.ComplaintRepository;
+import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import com.ecommerce.complaints.service.api.ComplaintService;
 import com.ecommerce.complaints.service.mapper.ComplaintMapper;
 import lombok.RequiredArgsConstructor;
