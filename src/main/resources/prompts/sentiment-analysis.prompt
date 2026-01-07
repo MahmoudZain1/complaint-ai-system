@@ -1,0 +1,19 @@
+Analyze the sentiment of the following customer complaint text.
+
+Classify the sentiment as ONE of: POSITIVE, NEUTRAL, or NEGATIVE
+Provide a sentiment score from -1.0 (very negative) to 1.0 (very positive)
+
+Guidelines:
+- NEGATIVE: Customer is frustrated, angry, disappointed, or upset
+- NEUTRAL: Customer is calm, stating facts without strong emotion
+- POSITIVE: Customer is satisfied, happy, or expressing gratitude despite the issue
+
+Complaint Text:
+{text}
+
+Respond ONLY with valid JSON in this exact format (no markdown, no extra text):
+{{
+  "sentiment": "NEGATIVE",
+  "score": -0.7,
+  "reason": "Customer expresses strong frustration and disappointment with the service"
+}}

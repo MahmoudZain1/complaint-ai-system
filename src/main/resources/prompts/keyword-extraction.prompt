@@ -1,0 +1,20 @@
+Extract the most important keywords and phrases from this complaint that would help in:
+1. Understanding the root cause
+2. Finding similar past complaints
+3. Categorizing the issue
+
+Focus on:
+- Product names or types
+- Specific problems mentioned
+- Actions that failed
+- Customer expectations
+
+Complaint Description:
+{description}
+
+Return the top 5-10 most relevant keywords as a JSON array.
+
+Respond ONLY with valid JSON in this exact format (no markdown, no extra text):
+{{
+  "keywords": ["delivery delay", "damaged package", "refund request", "poor quality", "customer service"]
+}}

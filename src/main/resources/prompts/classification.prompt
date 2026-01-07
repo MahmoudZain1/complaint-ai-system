@@ -1,0 +1,18 @@
+You are a complaint classification expert for e-commerce platforms.
+
+Given the following complaint description, classify it into ONE of these categories:
+- PRODUCT: Issues with product quality, defects, wrong item received, damaged product
+- SHIPPING: Delivery delays, damaged packages during shipping, lost shipments, courier issues
+- PAYMENT: Payment failures, unauthorized charges, refund processing, payment method issues
+- REFUND: Return requests, refund delays, refund amount disputes
+- OTHER: Any other issues not covered above
+
+Complaint Description:
+{description}
+
+Respond ONLY with valid JSON in this exact format (no markdown, no extra text):
+{{
+  "category": "CATEGORY_NAME",
+  "confidence": 0.95,
+  "reasoning": "Brief explanation of why this category was chosen"
+}}
