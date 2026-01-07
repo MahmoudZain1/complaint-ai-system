@@ -71,18 +71,4 @@ public class VectorIndexingService implements CommandLineRunner {
         }).toList();
     }
 
-
-    public void indexDocument(String content, DocumentSource source, Map<String, Object> metadata) {
-
-        Map<String, Object> fullMetadata = new HashMap<>(metadata);
-        fullMetadata.put("source", source.getCode());
-        fullMetadata.put("indexed_at", System.currentTimeMillis());
-        Document document = new Document(content, fullMetadata);
-        TokenTextSplitter splitter = TokenTextSplitter.builder()
-                .withChunkSize(CHUNK_SIZE)
-                .withMinChunkLengthToEmbed(MIN_CHUNK_LENGTH)
-                .build();
-        List<Document> chunks = splitter.apply(List.of(document));
-        vectorRepository.add(chunks);
-    }
 }

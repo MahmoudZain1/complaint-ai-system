@@ -15,10 +15,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
 
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
@@ -62,9 +58,3 @@ spring:
         dimensions: 384
         max-document-batch-size: 10000
         initialize-schema: true
-
-
-logging:
-  level:
-    com.ecommerce.complaints: DEBUG
-    org.springframework.ai: DEBUG

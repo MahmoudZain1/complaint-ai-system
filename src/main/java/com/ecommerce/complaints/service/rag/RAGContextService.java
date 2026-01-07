@@ -49,7 +49,6 @@ public class RAGContextService {
             } else if (doc.getMedia() != null) {
                 context.append("[Media: ").append(doc.getMedia().getMimeType()).append("]\n\n");
             }
-
             context.append("---\n\n");
         }
 

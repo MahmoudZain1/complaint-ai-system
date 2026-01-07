@@ -104,7 +104,6 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
         SearchRequest searchRequest = SearchRequestFactory.createForPolicies(complaint.getSubject() + " " + complaint.getDescription());
 
         ChatClient chatClient = chatClientBuilder
-                .defaultTools(customerTools)
                 .defaultAdvisors(
                         QuestionAnswerAdvisor.builder(vectorStore)
                                 .searchRequest(searchRequest)

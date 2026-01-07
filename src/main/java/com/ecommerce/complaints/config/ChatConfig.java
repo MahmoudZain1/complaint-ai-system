@@ -1,6 +1,8 @@
 package com.ecommerce.complaints.config;
 
 
+import com.ecommerce.complaints.ai.tools.CustomerTools;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.transformers.TransformersEmbeddingModel;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -41,5 +43,6 @@ public class ChatConfig {
                 .initializeSchema(initializeSchema)
                 .build();
     }
+
 
 }
