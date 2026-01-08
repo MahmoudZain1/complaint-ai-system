@@ -42,7 +42,7 @@ public class ComplaintUpdateDTO implements Serializable {
    * Get subject
    * @return subject
   */
-  @Size(min = 5, max = 255) 
+  
   @Schema(name = "subject", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("subject")
   public String getSubject() {
@@ -62,7 +62,7 @@ public class ComplaintUpdateDTO implements Serializable {
    * Get description
    * @return description
   */
-  @Size(min = 10, max = 5000) 
+  
   @Schema(name = "description", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("description")
   public String getDescription() {

@@ -5,10 +5,10 @@
  */
 package com.ecommerce.complaints.controller.api;
 
-import com.ecommerce.complaints.model.vto.ComplaintAnalysisVTO;
-import com.ecommerce.complaints.model.vto.ComplaintResponseVTO;
+import com.ecommerce.complaints.model.vto.AuthResponse;
 import com.ecommerce.complaints.model.vto.ErrorVTO;
-import com.ecommerce.complaints.model.vto.ResponseGenerationRequestDTO;
+import com.ecommerce.complaints.model.vto.LoginRequest;
+import com.ecommerce.complaints.model.vto.RegisterRequest;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,8 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,89 +37,76 @@ import jakarta.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 @Validated
-@Tag(name = "AI Analysis", description = "the AI Analysis API")
-public interface AiAnalysisApi {
+@Tag(name = "Auth", description = "the Auth API")
+public interface AuthApi {
 
     /**
-     * POST /complaints/{id}/analyze
+     * POST /auth/login : Login user
      *
-     * @param id  (required)
+     * @param loginRequest  (required)
      * @return  (status code 200)
      *         or Unauthorized (status code 401)
-     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
-        operationId = "analyzeComplaint",
-        tags = { "AI Analysis" },
+        operationId = "login",
+        summary = "Login user",
+        tags = { "Auth" },
         responses = {
             @ApiResponse(responseCode = "200", description = "", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintAnalysisVTO.class))
+                @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))
             }),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
-            }),
-            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/complaints/{id}/analyze",
-        produces = { "application/json" }
+        value = "/auth/login",
+        produces = { "application/json" },
+        consumes = { "application/json" }
     )
-    ResponseEntity<ComplaintAnalysisVTO> analyzeComplaint(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Long id
+    ResponseEntity<AuthResponse> login(
+        @Parameter(name = "LoginRequest", description = "", required = true) @Valid @RequestBody LoginRequest loginRequest
     );
 
 
     /**
-     * POST /complaints/{id}/generate-response
+     * POST /auth/register : Register new user
      *
-     * @param id  (required)
-     * @param responseGenerationRequestDTO  (optional)
-     * @return  (status code 200)
-     *         or Unauthorized (status code 401)
-     *         or Not found (status code 404)
+     * @param registerRequest  (required)
+     * @return  (status code 201)
+     *         or Bad request (status code 400)
      *         or Internal server error (status code 500)
      */
     @Operation(
-        operationId = "generateResponse",
-        tags = { "AI Analysis" },
+        operationId = "register",
+        summary = "Register new user",
+        tags = { "Auth" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintResponseVTO.class))
+            @ApiResponse(responseCode = "201", description = "", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))
             }),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
-            }),
-            @ApiResponse(responseCode = "404", description = "Not found", content = {
+            @ApiResponse(responseCode = "400", description = "Bad request", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/complaints/{id}/generate-response",
+        value = "/auth/register",
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<ComplaintResponseVTO> generateResponse(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Long id,
-        @Parameter(name = "ResponseGenerationRequestDTO", description = "") @Valid @RequestBody(required = false) ResponseGenerationRequestDTO responseGenerationRequestDTO
-    ) throws IOException;
+    ResponseEntity<AuthResponse> register(
+        @Parameter(name = "RegisterRequest", description = "", required = true) @Valid @RequestBody RegisterRequest registerRequest
+    );
 
 }

@@ -40,8 +40,6 @@ public class ComplaintResponseVTO implements Serializable {
   @Valid
   private List<String> suggestedActions;
 
-  private Integer similarComplaintsFound;
-
   private Double confidenceScore;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -135,26 +133,6 @@ public class ComplaintResponseVTO implements Serializable {
     this.suggestedActions = suggestedActions;
   }
 
-  public ComplaintResponseVTO similarComplaintsFound(Integer similarComplaintsFound) {
-    this.similarComplaintsFound = similarComplaintsFound;
-    return this;
-  }
-
-  /**
-   * Get similarComplaintsFound
-   * @return similarComplaintsFound
-  */
-  
-  @Schema(name = "similarComplaintsFound", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("similarComplaintsFound")
-  public Integer getSimilarComplaintsFound() {
-    return similarComplaintsFound;
-  }
-
-  public void setSimilarComplaintsFound(Integer similarComplaintsFound) {
-    this.similarComplaintsFound = similarComplaintsFound;
-  }
-
   public ComplaintResponseVTO confidenceScore(Double confidenceScore) {
     this.confidenceScore = confidenceScore;
     return this;
@@ -208,14 +186,13 @@ public class ComplaintResponseVTO implements Serializable {
         Objects.equals(this.generatedResponse, complaintResponseVTO.generatedResponse) &&
         Objects.equals(this.tone, complaintResponseVTO.tone) &&
         Objects.equals(this.suggestedActions, complaintResponseVTO.suggestedActions) &&
-        Objects.equals(this.similarComplaintsFound, complaintResponseVTO.similarComplaintsFound) &&
         Objects.equals(this.confidenceScore, complaintResponseVTO.confidenceScore) &&
         Objects.equals(this.generatedAt, complaintResponseVTO.generatedAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(complaintId, generatedResponse, tone, suggestedActions, similarComplaintsFound, confidenceScore, generatedAt);
+    return Objects.hash(complaintId, generatedResponse, tone, suggestedActions, confidenceScore, generatedAt);
   }
 
   @Override
@@ -226,7 +203,6 @@ public class ComplaintResponseVTO implements Serializable {
     sb.append("    generatedResponse: ").append(toIndentedString(generatedResponse)).append("\n");
     sb.append("    tone: ").append(toIndentedString(tone)).append("\n");
     sb.append("    suggestedActions: ").append(toIndentedString(suggestedActions)).append("\n");
-    sb.append("    similarComplaintsFound: ").append(toIndentedString(similarComplaintsFound)).append("\n");
     sb.append("    confidenceScore: ").append(toIndentedString(confidenceScore)).append("\n");
     sb.append("    generatedAt: ").append(toIndentedString(generatedAt)).append("\n");
     sb.append("}");

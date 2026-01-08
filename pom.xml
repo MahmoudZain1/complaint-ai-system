@@ -88,6 +88,13 @@
 
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+
+
+        <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
@@ -210,6 +217,8 @@
                                         <schemaMapping>ComplaintCategory=com.ecommerce.complaints.model.enums.ComplaintCategory</schemaMapping>
                                         <schemaMapping>Priority=com.ecommerce.complaints.model.enums.Priority</schemaMapping>
                                         <schemaMapping>Sentiment=com.ecommerce.complaints.model.enums.Sentiment</schemaMapping>
+                                        <schemaMapping>UserRole=com.ecommerce.complaints.model.enums.UserRole</schemaMapping>
+
                                     </schemaMappings>
                                 </configuration>
                             </execution>
@@ -255,6 +264,7 @@
                                         <schemaMapping>ComplaintCategory=com.ecommerce.complaints.model.enums.ComplaintCategory</schemaMapping>
                                         <schemaMapping>Priority=com.ecommerce.complaints.model.enums.Priority</schemaMapping>
                                         <schemaMapping>Sentiment=com.ecommerce.complaints.model.enums.Sentiment</schemaMapping>
+                                        <schemaMapping>UserRole=com.ecommerce.complaints.model.enums.UserRole</schemaMapping>
                                     </schemaMappings>
                                 </configuration>
                             </execution>

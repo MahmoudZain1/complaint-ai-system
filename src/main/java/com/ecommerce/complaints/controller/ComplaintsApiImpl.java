@@ -38,23 +38,14 @@ public class ComplaintsApiImpl implements ComplaintsApi {
         ComplaintVTO updated = complaintService.updateComplaint(id, dto);
         return ResponseEntity.ok(updated);
     }
-
-
-
     @Override
     public ResponseEntity<ComplaintVTO> getComplaintById(Long id) {
         return ResponseEntity.ok().body(complaintService.getComplaintById(id));
     }
 
-
     @Override
-    public ResponseEntity<ComplaintListVTO> listComplaints(ComplaintStatus status, ComplaintCategory category, Priority priority, Sentiment sentiment, Integer page, Integer size, String sortBy, String sortDirection) {
-        ComplaintListVTO result = complaintService.listComplaints(
-                status, category, priority, sentiment,
-                page, size, sortBy, sortDirection
-        );
-
-        return ResponseEntity.ok(result);
+    public ResponseEntity<ComplaintListVTO> listComplaints(ComplaintStatus status, ComplaintCategory category, Priority priority, Long page, Long size, String sortBy, String sortDirection) {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
 

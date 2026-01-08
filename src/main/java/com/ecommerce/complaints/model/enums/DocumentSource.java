@@ -13,7 +13,7 @@ public enum DocumentSource {
     RESPONSE("RESPONSE", "Generated Response");
 
     private final String code;
-    private final String displayName;
+    private final String name;
 
 
     public String getFilterExpression() {

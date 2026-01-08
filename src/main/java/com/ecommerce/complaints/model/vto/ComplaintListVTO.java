@@ -35,11 +35,11 @@ public class ComplaintListVTO implements Serializable {
 
   private Long totalElements;
 
-  private Integer totalPages;
+  private Long totalPages;
 
-  private Integer currentPage;
+  private Long currentPage;
 
-  private Integer pageSize;
+  private Long pageSize;
 
   private Boolean hasNext;
 
@@ -93,7 +93,7 @@ public class ComplaintListVTO implements Serializable {
     this.totalElements = totalElements;
   }
 
-  public ComplaintListVTO totalPages(Integer totalPages) {
+  public ComplaintListVTO totalPages(Long totalPages) {
     this.totalPages = totalPages;
     return this;
   }
@@ -105,15 +105,15 @@ public class ComplaintListVTO implements Serializable {
   
   @Schema(name = "totalPages", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("totalPages")
-  public Integer getTotalPages() {
+  public Long getTotalPages() {
     return totalPages;
   }
 
-  public void setTotalPages(Integer totalPages) {
+  public void setTotalPages(Long totalPages) {
     this.totalPages = totalPages;
   }
 
-  public ComplaintListVTO currentPage(Integer currentPage) {
+  public ComplaintListVTO currentPage(Long currentPage) {
     this.currentPage = currentPage;
     return this;
   }
@@ -125,15 +125,15 @@ public class ComplaintListVTO implements Serializable {
   
   @Schema(name = "currentPage", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("currentPage")
-  public Integer getCurrentPage() {
+  public Long getCurrentPage() {
     return currentPage;
   }
 
-  public void setCurrentPage(Integer currentPage) {
+  public void setCurrentPage(Long currentPage) {
     this.currentPage = currentPage;
   }
 
-  public ComplaintListVTO pageSize(Integer pageSize) {
+  public ComplaintListVTO pageSize(Long pageSize) {
     this.pageSize = pageSize;
     return this;
   }
@@ -145,11 +145,11 @@ public class ComplaintListVTO implements Serializable {
   
   @Schema(name = "pageSize", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("pageSize")
-  public Integer getPageSize() {
+  public Long getPageSize() {
     return pageSize;
   }
 
-  public void setPageSize(Integer pageSize) {
+  public void setPageSize(Long pageSize) {
     this.pageSize = pageSize;
   }
 
