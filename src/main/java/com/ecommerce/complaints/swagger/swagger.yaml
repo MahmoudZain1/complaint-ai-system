@@ -582,3 +582,7 @@ components:
         status:
           type: integer
           format: int64
+        details:
+          type: array
+          items:
+            type: string

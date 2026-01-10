@@ -4,12 +4,14 @@ import com.ecommerce.complaints.config.aspect.annotation.LogClass;
 import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.messaging.api.RabbitMQEventPublisher;
 import com.ecommerce.complaints.model.entity.Complaint;
+import com.ecommerce.complaints.model.entity.User;
 import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
 import com.ecommerce.complaints.model.enums.Sentiment;
 import com.ecommerce.complaints.model.generate.*;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
+import com.ecommerce.complaints.repository.api.UserRepository;
 import com.ecommerce.complaints.service.api.ComplaintService;
 import com.ecommerce.complaints.service.mapper.ComplaintMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,7 @@ import java.util.Set;
 
 import static com.ecommerce.complaints.messaging.event.ComplaintEvent.*;
 import static com.ecommerce.complaints.model.enums.ComplaintErrors.*;
+import static com.ecommerce.complaints.model.enums.UserErrors.INVALID_CREDENTIALS;
 
 
 @Service
@@ -34,14 +39,23 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final ComplaintMapper complaintMapper;
     private final RabbitMQEventPublisher eventPublisher;
+    private final UserRepository userRepository;
     private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("id", "createdAt", "updatedAt", "status", "priority", "category", "sentiment", "subject", "customerEmail");
 
 
     @Override
     @Transactional
     public ComplaintVTO createComplaint(ComplaintCreateDTO complaintCreateDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new BusinessException(INVALID_CREDENTIALS);
+        }
+        User user =  userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new BusinessException(INVALID_CREDENTIALS));
         validateComplaintCreation(complaintCreateDTO);
         Complaint complaint = complaintMapper.toEntity(complaintCreateDTO);
+        complaint.setCustomer(user);
+        complaint.setCustomerName(user.getName());
+        complaint.setCustomerEmail(user.getEmail());
         Complaint savedComplaint = complaintRepository.save(complaint);
 
         eventPublisher.publishEvent(COMPLAINT_CREATED, complaintMapper.toCreatedEvent(savedComplaint));

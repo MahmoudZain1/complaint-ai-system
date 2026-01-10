@@ -35,7 +35,6 @@ import static com.ecommerce.complaints.model.enums.ComplaintErrors.RESPONSE_ALRE
 
 @Service
 @RequiredArgsConstructor
-@LogClass
 @Slf4j
 public class AIAnalysisServiceImpl implements AIAnalysisService {
 

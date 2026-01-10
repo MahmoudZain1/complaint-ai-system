@@ -23,6 +23,7 @@
         <dotenv.version>4.0.0</dotenv.version>
         <spring-crypto-version>6.5.7</spring-crypto-version>
         <jwt-version>0.11.5</jwt-version>
+        <jdk15on.version>1.70</jdk15on.version>
     </properties>
 
     <dependencyManagement>
@@ -126,6 +127,12 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>${jwt-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${jdk15on.version}</version>
         </dependency>
 
         <dependency>

@@ -1,16 +1,22 @@
 package com.ecommerce.complaints.model.generate;
 
+import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
-
+import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
+import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
@@ -37,6 +43,9 @@ public class ErrorVTO implements Serializable {
   private String path;
 
   private Long status;
+
+  @Valid
+  private List<String> details;
 
   public ErrorVTO code(String code) {
     this.code = code;
@@ -158,6 +167,34 @@ public class ErrorVTO implements Serializable {
     this.status = status;
   }
 
+  public ErrorVTO details(List<String> details) {
+    this.details = details;
+    return this;
+  }
+
+  public ErrorVTO addDetailsItem(String detailsItem) {
+    if (this.details == null) {
+      this.details = new ArrayList<>();
+    }
+    this.details.add(detailsItem);
+    return this;
+  }
+
+  /**
+   * Get details
+   * @return details
+  */
+  
+  @Schema(name = "details", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("details")
+  public List<String> getDetails() {
+    return details;
+  }
+
+  public void setDetails(List<String> details) {
+    this.details = details;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -172,12 +209,13 @@ public class ErrorVTO implements Serializable {
         Objects.equals(this.message, errorVTO.message) &&
         Objects.equals(this.timestamp, errorVTO.timestamp) &&
         Objects.equals(this.path, errorVTO.path) &&
-        Objects.equals(this.status, errorVTO.status);
+        Objects.equals(this.status, errorVTO.status) &&
+        Objects.equals(this.details, errorVTO.details);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(code, error, message, timestamp, path, status);
+    return Objects.hash(code, error, message, timestamp, path, status, details);
   }
 
   @Override
@@ -190,6 +228,7 @@ public class ErrorVTO implements Serializable {
     sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("    path: ").append(toIndentedString(path)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    details: ").append(toIndentedString(details)).append("\n");
     sb.append("}");
     return sb.toString();
   }

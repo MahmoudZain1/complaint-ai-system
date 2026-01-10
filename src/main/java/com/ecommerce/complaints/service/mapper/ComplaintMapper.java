@@ -31,6 +31,9 @@ public abstract class ComplaintMapper {
     @Mapping(target = "complaintId", source = "complaint.id")
     public abstract ComplaintResponseVTO toVTO(ComplaintResponse entity);
 
+    @Mapping(target = "customerId", source = "customer.id")
+    @Mapping(target = "customerName", source = "customer.name")
+    @Mapping(target = "customerEmail", source = "customer.email")
     public abstract ComplaintVTO toVTO(Complaint entity);
 
     @Mapping(target = "complaintId", source = "id")

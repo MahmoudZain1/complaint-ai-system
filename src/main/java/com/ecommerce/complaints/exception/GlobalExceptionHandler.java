@@ -1,6 +1,6 @@
 package com.ecommerce.complaints.exception;
 
-import  com.ecommerce.complaints.model.vto.ErrorVTO;
+import com.ecommerce.complaints.model.generate.ErrorVTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
         .timestamp(LocalDateTime.now())
         .path(request.getDescription(false).replace("uri=", ""))
                 .details(validationErrors)
-        .status(HttpStatus.BAD_REQUEST.value()).build();
+        .status(Long.valueOf(HttpStatus.BAD_REQUEST.value())).build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
                 .message("An unexpected error occurred")
                 .timestamp(LocalDateTime.now())
                 .path(request.getDescription(false).replace("uri=", ""))
-                .status(INTERNAL_SERVER_ERROR.value())
+                .status(Long.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                 .build();
 
         return new ResponseEntity<>(error, INTERNAL_SERVER_ERROR);

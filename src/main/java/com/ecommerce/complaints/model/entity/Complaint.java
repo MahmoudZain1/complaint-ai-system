@@ -26,6 +26,11 @@ public class Complaint  implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "customer_name")
+    private String customerName;
+
+    @Column(name = "customer_email")
+    private String customerEmail;
 
     @Column(name = "subject")
     private String subject;
