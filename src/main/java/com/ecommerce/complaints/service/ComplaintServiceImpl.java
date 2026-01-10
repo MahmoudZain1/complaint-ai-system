@@ -4,10 +4,11 @@ import com.ecommerce.complaints.config.aspect.annotation.LogClass;
 import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.messaging.api.RabbitMQEventPublisher;
 import com.ecommerce.complaints.model.entity.Complaint;
+import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
 import com.ecommerce.complaints.model.enums.Sentiment;
-import com.ecommerce.complaints.model.vto.*;
+import com.ecommerce.complaints.model.generate.*;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import com.ecommerce.complaints.service.api.ComplaintService;
 import com.ecommerce.complaints.service.mapper.ComplaintMapper;
@@ -115,9 +116,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         if (dto == null) {
             throw new BusinessException(INVALID_INPUT);
         }
-        if (dto.getCustomerEmail() == null || dto.getCustomerEmail().trim().isEmpty()) {
-            throw new BusinessException(MISSING_REQUIRED_FIELD);
-        }
         if (dto.getSubject() == null || dto.getSubject().trim().isEmpty()) {
             throw new BusinessException(MISSING_REQUIRED_FIELD);
         }
@@ -126,9 +124,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
         if (dto.getDescription().length() > 5000) {
             throw new BusinessException(VALIDATION_ERROR);
-        }
-        if (!dto.getCustomerEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            throw new BusinessException(INVALID_EMAIL);
         }
     }
 }

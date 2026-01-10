@@ -1,9 +1,8 @@
 package com.ecommerce.complaints.service.api;
 
 import com.ecommerce.complaints.model.entity.Complaint;
-import com.ecommerce.complaints.model.vto.ComplaintAnalysisVTO;
-import com.ecommerce.complaints.model.vto.ComplaintResponseVTO;
-import com.ecommerce.complaints.model.vto.ResponseGenerationRequestDTO;
+import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
+import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 
 import java.io.IOException;
 

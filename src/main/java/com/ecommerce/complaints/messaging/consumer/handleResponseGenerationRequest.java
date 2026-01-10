@@ -1,7 +1,7 @@
 package com.ecommerce.complaints.messaging.consumer;
 
 import com.ecommerce.complaints.messaging.api.RabbitMQEventPublisher;
-import com.ecommerce.complaints.model.vto.ComplaintResponseVTO;
+import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 import com.ecommerce.complaints.service.api.AIAnalysisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

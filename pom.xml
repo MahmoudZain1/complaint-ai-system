@@ -218,7 +218,7 @@
                                         ${project.basedir}/src/main/java/com/ecommerce/complaints/swagger/swagger.yaml
                                     </inputSpec>
                                     <generatorName>spring</generatorName>
-                                    <modelPackage>com.ecommerce.complaints.model.vto</modelPackage>
+                                    <modelPackage>com.ecommerce.complaints.model.generate</modelPackage>
                                     <generateApis>false</generateApis>
                                     <generateModels>true</generateModels>
                                     <generateSupportingFiles>false</generateSupportingFiles>
@@ -261,7 +261,7 @@
                                         ${project.basedir}/src/main/java/com/ecommerce/complaints/swagger/swagger.yaml
                                     </inputSpec>
                                     <generatorName>spring</generatorName>
-                                    <modelPackage>com.ecommerce.complaints.model.vto</modelPackage>
+                                    <modelPackage>com.ecommerce.complaints.model.generate</modelPackage>
                                     <apiPackage>com.ecommerce.complaints.controller.api</apiPackage>
                                     <generateApis>true</generateApis>
                                     <generateModels>false</generateModels>

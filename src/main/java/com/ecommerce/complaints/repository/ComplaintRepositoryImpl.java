@@ -1,6 +1,7 @@
 package com.ecommerce.complaints.repository;
 
 import com.ecommerce.complaints.model.entity.Complaint;
+import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
 import com.ecommerce.complaints.model.enums.Sentiment;

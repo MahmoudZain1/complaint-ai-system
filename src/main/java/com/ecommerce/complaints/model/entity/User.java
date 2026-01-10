@@ -36,6 +36,9 @@ public class User implements Serializable, UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.CUSTOMER;
 
+    @Column(name = "is_active")
+    private boolean active = true;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -50,5 +53,30 @@ public class User implements Serializable, UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return active;
     }
 }

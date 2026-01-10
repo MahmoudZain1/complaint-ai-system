@@ -5,7 +5,7 @@ import com.ecommerce.complaints.messaging.event.ComplaintEventData;
 import com.ecommerce.complaints.model.entity.Complaint;
 
 import com.ecommerce.complaints.model.entity.ComplaintResponse;
-import com.ecommerce.complaints.model.vto.*;
+import com.ecommerce.complaints.model.generate.*;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 

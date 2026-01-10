@@ -1,12 +1,12 @@
 package com.ecommerce.complaints.service.api;
 
-import com.ecommerce.complaints.model.vto.AuthResponse;
-import com.ecommerce.complaints.model.vto.LoginRequest;
-import com.ecommerce.complaints.model.vto.RegisterRequest;
+import com.ecommerce.complaints.model.generate.AuthResponse;
+import com.ecommerce.complaints.model.generate.LoginRequest;
+import com.ecommerce.complaints.model.generate.RegisterRequest;
 
 public interface AuthService {
 
-    AuthResponse register(RegisterRequest request);
+    void register(RegisterRequest request);
 
     AuthResponse login(LoginRequest request);
 }
