@@ -23,15 +23,16 @@ spring:
     password: ${RABBITMQ_PASSWORD:guest}
     listener:
       simple:
+        concurrency: 1
+        max-concurrency: 1
         acknowledge-mode: auto
-        concurrency: 3
-        max-concurrency: 10
-        prefetch: 5
         retry:
           enabled: true
-          max-attempts: 3
-          initial-interval: 2000ms
-          multiplier: 2
+          initial-interval: 30000
+          max-attempts: 5
+          max-interval: 120000
+          multiplier: 2.0
+        default-requeue-rejected: false
 
   ai:
     openai:

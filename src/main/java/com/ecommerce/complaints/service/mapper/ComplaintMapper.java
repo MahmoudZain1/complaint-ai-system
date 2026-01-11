@@ -49,4 +49,7 @@ public abstract class ComplaintMapper {
         .includeCompensation(false)
         .customInstructions(null).build();
         return dto;
-    }}
+    }
+}
+
+
