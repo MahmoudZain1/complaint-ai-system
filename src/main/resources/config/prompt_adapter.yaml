@@ -1,0 +1,7 @@
+prompt:
+  analysis-template: "classpath:prompts/analysis-template.prompt"
+  classification-prompt: "classpath:prompts/classification.prompt"
+  sentiment-prompt: "classpath:prompts/sentiment-analysis.prompt"
+  urgency-prompt: "classpath:prompts/urgency-detection.prompt"
+  keywords-prompt: "classpath:prompts/keyword-extraction.prompt"
+  response-prompt: "classpath:prompts/Response.prompt"

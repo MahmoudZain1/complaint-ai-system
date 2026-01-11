@@ -1,7 +1,7 @@
 package com.ecommerce.complaints.controller;
 
 import com.ecommerce.complaints.controller.api.AiAnalysisApi;
-import com.ecommerce.complaints.model.vto.*;
+import com.ecommerce.complaints.model.generate.*;
 import com.ecommerce.complaints.service.api.AIAnalysisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

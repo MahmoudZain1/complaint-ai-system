@@ -5,10 +5,10 @@
  */
 package com.ecommerce.complaints.controller.api;
 
-import com.ecommerce.complaints.model.vto.ComplaintAnalysisVTO;
-import com.ecommerce.complaints.model.vto.ComplaintResponseVTO;
-import com.ecommerce.complaints.model.vto.ErrorVTO;
-import com.ecommerce.complaints.model.vto.ResponseGenerationRequestDTO;
+import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
+import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
+import com.ecommerce.complaints.model.generate.ErrorVTO;
+import com.ecommerce.complaints.model.generate.ResponseGenerationRequestDTO;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,27 +43,33 @@ import jakarta.annotation.Generated;
 public interface AiAnalysisApi {
 
     /**
-     * POST /complaints/{id}/analyze : Perform detailed AI analysis on complaint
+     * POST /complaints/{id}/analyze
      *
      * @param id  (required)
      * @return  (status code 200)
-     *         or Resource not found (status code 404)
+     *         or Unauthorized (status code 401)
+     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
         operationId = "analyzeComplaint",
-        summary = "Perform detailed AI analysis on complaint",
         tags = { "AI Analysis" },
         responses = {
             @ApiResponse(responseCode = "200", description = "", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintAnalysisVTO.class))
             }),
-            @ApiResponse(responseCode = "404", description = "Resource not found", content = {
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -77,28 +83,34 @@ public interface AiAnalysisApi {
 
 
     /**
-     * POST /complaints/{id}/generate-response : Generate AI-powered response for complaint
+     * POST /complaints/{id}/generate-response
      *
      * @param id  (required)
      * @param responseGenerationRequestDTO  (optional)
      * @return  (status code 200)
-     *         or Resource not found (status code 404)
+     *         or Unauthorized (status code 401)
+     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
         operationId = "generateResponse",
-        summary = "Generate AI-powered response for complaint",
         tags = { "AI Analysis" },
         responses = {
             @ApiResponse(responseCode = "200", description = "", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintResponseVTO.class))
             }),
-            @ApiResponse(responseCode = "404", description = "Resource not found", content = {
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(

@@ -1,6 +1,7 @@
 package com.ecommerce.complaints.ai.tools;
 
 import com.ecommerce.complaints.model.entity.Complaint;
+import com.ecommerce.complaints.model.entity.User;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.tool.annotation.Tool;
@@ -19,10 +20,13 @@ public class CustomerTools {
     private final VectorStore vectorStore;
 
 
-    @Tool(name = "getCustomerName" , description = "Get customer name from complaint by ID")
+    @Tool(name = "getCustomerName", description = "Get customer name from complaint by ID")
     public String getCustomerName(@ToolParam(description = "Complaint ID") Long complaintId) {
         Optional<Complaint> complaint = complaintRepository.findById(complaintId);
-        return complaint.map(Complaint::getCustomerName).orElse("Dear");
+        User customer = complaint.get().getCustomer();
+        if (customer != null && customer.getName() != null) {
+            return customer.getName();
+        }return "Dear ";
     }
 
 }

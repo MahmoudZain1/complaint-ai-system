@@ -5,7 +5,7 @@ import com.ecommerce.complaints.messaging.event.ComplaintEventData;
 import com.ecommerce.complaints.model.entity.Complaint;
 
 import com.ecommerce.complaints.model.entity.ComplaintResponse;
-import com.ecommerce.complaints.model.vto.*;
+import com.ecommerce.complaints.model.generate.*;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 
@@ -31,6 +31,9 @@ public abstract class ComplaintMapper {
     @Mapping(target = "complaintId", source = "complaint.id")
     public abstract ComplaintResponseVTO toVTO(ComplaintResponse entity);
 
+    @Mapping(target = "customerId", source = "customer.id")
+    @Mapping(target = "customerName", source = "customer.name")
+    @Mapping(target = "customerEmail", source = "customer.email")
     public abstract ComplaintVTO toVTO(Complaint entity);
 
     @Mapping(target = "complaintId", source = "id")
@@ -46,4 +49,7 @@ public abstract class ComplaintMapper {
         .includeCompensation(false)
         .customInstructions(null).build();
         return dto;
-    }}
+    }
+}
+
+

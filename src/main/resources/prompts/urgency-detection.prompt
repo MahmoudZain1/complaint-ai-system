@@ -1,17 +1,6 @@
-Extract keywords from: {description}
+Urgency level (LOW/MEDIUM/HIGH/URGENT):
 
-{
-  "keywords": []
-}
+Complaint: {description}
 
-Respond ONLY with valid JSON in this exact format (no markdown, no extra text):
-{{
-  "priority": "HIGH",
-  "urgencyScore": 0.85,
-  "reason": "Customer mentions time-sensitive event and expresses high frustration"
-}
-Urgency Levels:
- LOW: Non-time-sensitive, minor inconvenience, customer is patient
- MEDIUM: Moderate concern, should be addressed within normal timeframe
- HIGH: Time-sensitive issue, customer is frustrated, needs prompt attention
- URGENT: Critical issue, very time-sensitive (event/travel related), customer is very upset, financial impact
+JSON only:
+{{"priority": "X", "urgencyScore": 0.0, "reason": "brief"}}

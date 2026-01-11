@@ -1,6 +1,6 @@
 package com.ecommerce.complaints.service.formatter;
 
-import com.ecommerce.complaints.model.vto.ComplaintAnalysisVTO;
+import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
 
 import org.springframework.stereotype.Component;
 
@@ -51,9 +51,9 @@ public class AnalysisFormatter {
         }
         text.append("\n");
 
-        if (analysis.getUrgencyReason() != null && !analysis.getUrgencyReason().isEmpty()) {
-            text.append("   Reason: ").append(analysis.getUrgencyReason());
-        }
+//        if (analysis.getUrgencyReason() != null && !analysis.getUrgencyReason().isEmpty()) {
+//            text.append("   Reason: ").append(analysis.getUrgencyReason());
+//        }
         text.append("\n\n");
     }
 

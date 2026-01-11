@@ -1,12 +1,14 @@
 package com.ecommerce.complaints.service.rag;
 
-import com.ecommerce.complaints.config.aspect.annotation.LogClass;
 import com.ecommerce.complaints.service.config.PromptAdapterConfig;
 import com.ecommerce.complaints.util.HtmlSanitizer;
-import com.ecommerce.complaints.util.ResourceReader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 
 @Service
@@ -17,11 +19,11 @@ public class PromptBuilderService {
 
     public String buildAnalysisPrompt(String subject, String description,  String policyContext, String format) throws IOException {
 
-        String analysisTemplate = ResourceReader.readAsString(promptAdapterConfig.getAnalysisTemplate());
-        String classificationPrompt = ResourceReader.readAsString(promptAdapterConfig.getClassificationPrompt());
-        String sentimentPrompt = ResourceReader.readAsString(promptAdapterConfig.getSentimentPrompt());
-        String urgencyPrompt = ResourceReader.readAsString(promptAdapterConfig.getUrgencyPrompt());
-        String keywordPrompt = ResourceReader.readAsString(promptAdapterConfig.getKeywordsPrompt());
+        String analysisTemplate =readAsString(promptAdapterConfig.getAnalysisTemplate());
+        String classificationPrompt =readAsString(promptAdapterConfig.getClassificationPrompt());
+        String sentimentPrompt = readAsString(promptAdapterConfig.getSentimentPrompt());
+        String urgencyPrompt =readAsString(promptAdapterConfig.getUrgencyPrompt());
+        String keywordPrompt = readAsString(promptAdapterConfig.getKeywordsPrompt());
 
         String prompt = analysisTemplate
                 .replace("{subject}", subject != null ? subject : "")
@@ -39,7 +41,7 @@ public class PromptBuilderService {
     public String buildResponsePrompt(String subject, String description,
                                       Long complaintId, String format , String policiesContext, String similarComplaintsContext) throws IOException {
 
-        String responseTemplate = ResourceReader.readAsString(promptAdapterConfig.getResponsePrompt());
+        String responseTemplate = readAsString(promptAdapterConfig.getResponsePrompt());
         String safeSubject = HtmlSanitizer.escapeHtml(subject);
         String safeDescription = HtmlSanitizer.escapeHtml(description);
 
@@ -52,6 +54,15 @@ public class PromptBuilderService {
                 .replace("{format}", format);
 
         return prompt;
+    }
+
+
+    public static String readAsString(Resource resource) throws IOException {
+        if (resource == null || !resource.exists()) {
+            throw new IOException("");
+        }
+        return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8
+        );
     }
 
 }

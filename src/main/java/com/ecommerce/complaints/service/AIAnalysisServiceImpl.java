@@ -5,8 +5,8 @@ import com.ecommerce.complaints.config.aspect.annotation.LogClass;
 import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.entity.ComplaintResponse;
-import com.ecommerce.complaints.model.vto.ComplaintAnalysisVTO;
-import com.ecommerce.complaints.model.vto.ComplaintResponseVTO;
+import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
+import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import com.ecommerce.complaints.repository.api.ComplaintResponseRepository;
 import com.ecommerce.complaints.service.api.AIAnalysisService;
@@ -35,7 +35,6 @@ import static com.ecommerce.complaints.model.enums.ComplaintErrors.RESPONSE_ALRE
 
 @Service
 @RequiredArgsConstructor
-@LogClass
 @Slf4j
 public class AIAnalysisServiceImpl implements AIAnalysisService {
 

@@ -5,12 +5,12 @@
  */
 package com.ecommerce.complaints.controller.api;
 
-import com.ecommerce.complaints.model.vto.ComplaintCreateDTO;
-import com.ecommerce.complaints.model.vto.ComplaintListVTO;
-import com.ecommerce.complaints.model.vto.ComplaintUpdateDTO;
-import com.ecommerce.complaints.model.vto.ComplaintVTO;
-import com.ecommerce.complaints.model.vto.ErrorVTO;
-import com.ecommerce.complaints.model.vto.UpdateComplaintStatusRequest;
+import com.ecommerce.complaints.model.generate.ComplaintCreateDTO;
+import com.ecommerce.complaints.model.generate.ComplaintListVTO;
+import com.ecommerce.complaints.model.generate.ComplaintUpdateDTO;
+import com.ecommerce.complaints.model.generate.ComplaintVTO;
+import com.ecommerce.complaints.model.generate.ErrorVTO;
+import com.ecommerce.complaints.model.generate.UpdateComplaintStatusRequest;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,16 +43,17 @@ import jakarta.annotation.Generated;
 public interface ComplaintsApi {
 
     /**
-     * POST /complaints : Create new complaint with auto-classification
+     * POST /complaints : Create new complaint
      *
      * @param complaintCreateDTO  (required)
      * @return  (status code 201)
      *         or Bad request (status code 400)
+     *         or Unauthorized (status code 401)
      *         or Internal server error (status code 500)
      */
     @Operation(
         operationId = "createComplaint",
-        summary = "Create new complaint with auto-classification",
+        summary = "Create new complaint",
         tags = { "Complaints" },
         responses = {
             @ApiResponse(responseCode = "201", description = "", content = {
@@ -61,9 +62,15 @@ public interface ComplaintsApi {
             @ApiResponse(responseCode = "400", description = "Bad request", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -82,7 +89,8 @@ public interface ComplaintsApi {
      *
      * @param id  (required)
      * @return Complaint deleted successfully (status code 204)
-     *         or Resource not found (status code 404)
+     *         or Unauthorized (status code 401)
+     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
@@ -91,12 +99,18 @@ public interface ComplaintsApi {
         tags = { "Complaints" },
         responses = {
             @ApiResponse(responseCode = "204", description = "Complaint deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Resource not found", content = {
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -110,27 +124,34 @@ public interface ComplaintsApi {
 
 
     /**
-     * GET /complaints/{id} : Get single complaint by ID
+     * GET /complaints/{id} : Get complaint by ID
      *
      * @param id  (required)
      * @return  (status code 200)
-     *         or Resource not found (status code 404)
+     *         or Unauthorized (status code 401)
+     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
         operationId = "getComplaintById",
-        summary = "Get single complaint by ID",
+        summary = "Get complaint by ID",
         tags = { "Complaints" },
         responses = {
             @ApiResponse(responseCode = "200", description = "", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintVTO.class))
             }),
-            @ApiResponse(responseCode = "404", description = "Resource not found", content = {
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -144,34 +165,40 @@ public interface ComplaintsApi {
 
 
     /**
-     * GET /complaints : List complaints with filters and pagination
+     * GET /complaints : List complaints
      *
      * @param status  (optional)
      * @param category  (optional)
      * @param priority  (optional)
-     * @param sentiment  (optional)
-     * @param page Page number (zero-based) (optional, default to 0)
-     * @param size Page size (max 200) (optional, default to 20)
-     * @param sortBy Field to sort by (optional, default to createdAt)
-     * @param sortDirection Sort direction (optional, default to DESC)
-     * @return Paginated list of complaints (status code 200)
+     * @param page  (optional, default to 0)
+     * @param size  (optional, default to 20)
+     * @param sortBy  (optional, default to createdAt)
+     * @param sortDirection  (optional, default to DESC)
+     * @return  (status code 200)
      *         or Bad request (status code 400)
+     *         or Unauthorized (status code 401)
      *         or Internal server error (status code 500)
      */
     @Operation(
         operationId = "listComplaints",
-        summary = "List complaints with filters and pagination",
+        summary = "List complaints",
         tags = { "Complaints" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Paginated list of complaints", content = {
+            @ApiResponse(responseCode = "200", description = "", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintListVTO.class))
             }),
             @ApiResponse(responseCode = "400", description = "Bad request", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -183,11 +210,10 @@ public interface ComplaintsApi {
         @Parameter(name = "status", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "status", required = false) com.ecommerce.complaints.model.enums.ComplaintStatus status,
         @Parameter(name = "category", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "category", required = false) com.ecommerce.complaints.model.enums.ComplaintCategory category,
         @Parameter(name = "priority", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "priority", required = false) com.ecommerce.complaints.model.enums.Priority priority,
-        @Parameter(name = "sentiment", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sentiment", required = false) com.ecommerce.complaints.model.enums.Sentiment sentiment,
-        @Min(0) @Parameter(name = "page", description = "Page number (zero-based)", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-        @Min(1) @Max(200) @Parameter(name = "size", description = "Page size (max 200)", in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
-        @Parameter(name = "sortBy", description = "Field to sort by", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
-        @Parameter(name = "sortDirection", description = "Sort direction", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") String sortDirection
+        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Long page,
+        @Parameter(name = "size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false, defaultValue = "20") Long size,
+        @Parameter(name = "sortBy", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
+        @Parameter(name = "sortDirection", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sortDirection", required = false, defaultValue = "DESC") String sortDirection
     );
 
 
@@ -198,7 +224,8 @@ public interface ComplaintsApi {
      * @param complaintUpdateDTO  (required)
      * @return  (status code 200)
      *         or Bad request (status code 400)
-     *         or Resource not found (status code 404)
+     *         or Unauthorized (status code 401)
+     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
@@ -212,12 +239,18 @@ public interface ComplaintsApi {
             @ApiResponse(responseCode = "400", description = "Bad request", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
-            @ApiResponse(responseCode = "404", description = "Resource not found", content = {
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -233,18 +266,18 @@ public interface ComplaintsApi {
 
 
     /**
-     * PUT /complaints/{id}/status : Update complaint status
+     * PUT /complaints/{id}/status
      *
      * @param id  (required)
      * @param updateComplaintStatusRequest  (required)
      * @return  (status code 200)
      *         or Bad request (status code 400)
-     *         or Resource not found (status code 404)
+     *         or Unauthorized (status code 401)
+     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
         operationId = "updateComplaintStatus",
-        summary = "Update complaint status",
         tags = { "Complaints" },
         responses = {
             @ApiResponse(responseCode = "200", description = "", content = {
@@ -253,12 +286,18 @@ public interface ComplaintsApi {
             @ApiResponse(responseCode = "400", description = "Bad request", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
-            @ApiResponse(responseCode = "404", description = "Resource not found", content = {
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(

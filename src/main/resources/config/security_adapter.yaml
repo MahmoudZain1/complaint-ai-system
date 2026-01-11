@@ -1,0 +1,3 @@
+jwt:
+  secret: "mySuperSecureJWTSecretKeyForComplaintAIApplication2025!"
+  expiration: 86400000

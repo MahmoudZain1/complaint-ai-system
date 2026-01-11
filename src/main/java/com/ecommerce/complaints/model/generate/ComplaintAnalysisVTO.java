@@ -1,4 +1,4 @@
-package com.ecommerce.complaints.model.vto;
+package com.ecommerce.complaints.model.generate;
 
 import java.net.URI;
 import java.util.Objects;
@@ -45,8 +45,6 @@ public class ComplaintAnalysisVTO implements Serializable {
   private com.ecommerce.complaints.model.enums.Priority priority;
 
   private Double urgencyScore;
-
-  private String urgencyReason;
 
   @Valid
   private List<String> keywords;
@@ -106,11 +104,9 @@ public class ComplaintAnalysisVTO implements Serializable {
 
   /**
    * Get categoryConfidence
-   * minimum: 0.0
-   * maximum: 1.0
    * @return categoryConfidence
   */
-  @DecimalMin("0.0") @DecimalMax("1.0") 
+  
   @Schema(name = "categoryConfidence", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("categoryConfidence")
   public Double getCategoryConfidence() {
@@ -148,11 +144,9 @@ public class ComplaintAnalysisVTO implements Serializable {
 
   /**
    * Get sentimentScore
-   * minimum: -1.0
-   * maximum: 1.0
    * @return sentimentScore
   */
-  @DecimalMin("-1.0") @DecimalMax("1.0") 
+  
   @Schema(name = "sentimentScore", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("sentimentScore")
   public Double getSentimentScore() {
@@ -190,11 +184,9 @@ public class ComplaintAnalysisVTO implements Serializable {
 
   /**
    * Get urgencyScore
-   * minimum: 0.0
-   * maximum: 1.0
    * @return urgencyScore
   */
-  @DecimalMin("0.0") @DecimalMax("1.0") 
+  
   @Schema(name = "urgencyScore", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("urgencyScore")
   public Double getUrgencyScore() {
@@ -203,26 +195,6 @@ public class ComplaintAnalysisVTO implements Serializable {
 
   public void setUrgencyScore(Double urgencyScore) {
     this.urgencyScore = urgencyScore;
-  }
-
-  public ComplaintAnalysisVTO urgencyReason(String urgencyReason) {
-    this.urgencyReason = urgencyReason;
-    return this;
-  }
-
-  /**
-   * Get urgencyReason
-   * @return urgencyReason
-  */
-  
-  @Schema(name = "urgencyReason", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("urgencyReason")
-  public String getUrgencyReason() {
-    return urgencyReason;
-  }
-
-  public void setUrgencyReason(String urgencyReason) {
-    this.urgencyReason = urgencyReason;
   }
 
   public ComplaintAnalysisVTO keywords(List<String> keywords) {
@@ -337,7 +309,6 @@ public class ComplaintAnalysisVTO implements Serializable {
         Objects.equals(this.sentimentScore, complaintAnalysisVTO.sentimentScore) &&
         Objects.equals(this.priority, complaintAnalysisVTO.priority) &&
         Objects.equals(this.urgencyScore, complaintAnalysisVTO.urgencyScore) &&
-        Objects.equals(this.urgencyReason, complaintAnalysisVTO.urgencyReason) &&
         Objects.equals(this.keywords, complaintAnalysisVTO.keywords) &&
         Objects.equals(this.summary, complaintAnalysisVTO.summary) &&
         Objects.equals(this.recommendedActions, complaintAnalysisVTO.recommendedActions) &&
@@ -346,7 +317,7 @@ public class ComplaintAnalysisVTO implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(complaintId, category, categoryConfidence, sentiment, sentimentScore, priority, urgencyScore, urgencyReason, keywords, summary, recommendedActions, analyzedAt);
+    return Objects.hash(complaintId, category, categoryConfidence, sentiment, sentimentScore, priority, urgencyScore, keywords, summary, recommendedActions, analyzedAt);
   }
 
   @Override
@@ -360,7 +331,6 @@ public class ComplaintAnalysisVTO implements Serializable {
     sb.append("    sentimentScore: ").append(toIndentedString(sentimentScore)).append("\n");
     sb.append("    priority: ").append(toIndentedString(priority)).append("\n");
     sb.append("    urgencyScore: ").append(toIndentedString(urgencyScore)).append("\n");
-    sb.append("    urgencyReason: ").append(toIndentedString(urgencyReason)).append("\n");
     sb.append("    keywords: ").append(toIndentedString(keywords)).append("\n");
     sb.append("    summary: ").append(toIndentedString(summary)).append("\n");
     sb.append("    recommendedActions: ").append(toIndentedString(recommendedActions)).append("\n");

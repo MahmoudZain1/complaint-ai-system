@@ -4,7 +4,7 @@ import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
 import com.ecommerce.complaints.model.enums.Sentiment;
-import com.ecommerce.complaints.model.vto.*;
+import com.ecommerce.complaints.model.generate.*;
 
 public interface ComplaintService {
 

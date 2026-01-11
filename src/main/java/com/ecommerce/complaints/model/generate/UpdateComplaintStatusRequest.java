@@ -1,4 +1,4 @@
-package com.ecommerce.complaints.model.vto;
+package com.ecommerce.complaints.model.generate;
 
 import java.net.URI;
 import java.util.Objects;
@@ -71,7 +71,7 @@ public class UpdateComplaintStatusRequest implements Serializable {
    * Get note
    * @return note
   */
-  @Size(max = 500) 
+  
   @Schema(name = "note", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("note")
   public String getNote() {

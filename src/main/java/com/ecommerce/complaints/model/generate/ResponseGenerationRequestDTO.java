@@ -1,4 +1,4 @@
-package com.ecommerce.complaints.model.vto;
+package com.ecommerce.complaints.model.generate;
 
 import java.net.URI;
 import java.util.Objects;
@@ -121,7 +121,7 @@ public class ResponseGenerationRequestDTO implements Serializable {
    * Get customInstructions
    * @return customInstructions
   */
-  @Size(max = 500) 
+  
   @Schema(name = "customInstructions", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("customInstructions")
   public String getCustomInstructions() {

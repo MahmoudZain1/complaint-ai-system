@@ -26,9 +26,6 @@ public class Complaint  implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "customer_id")
-    private String customerId;
-
     @Column(name = "customer_name")
     private String customerName;
 
@@ -68,5 +65,9 @@ public class Complaint  implements Serializable {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private User customer;
 
 }

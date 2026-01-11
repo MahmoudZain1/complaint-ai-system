@@ -1,4 +1,4 @@
-package com.ecommerce.complaints.model.vto;
+package com.ecommerce.complaints.model.generate;
 
 import java.net.URI;
 import java.util.Objects;
@@ -128,7 +128,7 @@ public class ComplaintVTO implements Serializable {
    * Get customerEmail
    * @return customerEmail
   */
-  @jakarta.validation.constraints.Email
+  
   @Schema(name = "customerEmail", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("customerEmail")
   public String getCustomerEmail() {

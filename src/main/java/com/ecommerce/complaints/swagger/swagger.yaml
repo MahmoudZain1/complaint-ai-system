@@ -12,13 +12,60 @@ servers:
 tags:
   - name: Complaints
   - name: AI Analysis
+  - name: Auth
 
 paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      operationId: register
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      operationId: login
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /complaints:
     post:
       tags: [Complaints]
       operationId: createComplaint
-      summary: Create new complaint with auto-classification
+      summary: Create new complaint
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -33,85 +80,72 @@ paths:
                 $ref: '#/components/schemas/ComplaintVTO'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
     get:
-      tags: [ Complaints ]
+      tags: [Complaints]
       operationId: listComplaints
-      summary: List complaints with filters and pagination
+      summary: List complaints
+      security:
+        - BearerAuth: []
       parameters:
         - name: status
           in: query
-          required: false
           schema:
             $ref: '#/components/schemas/ComplaintStatus'
         - name: category
           in: query
-          required: false
           schema:
             $ref: '#/components/schemas/ComplaintCategory'
         - name: priority
           in: query
-          required: false
           schema:
             $ref: '#/components/schemas/Priority'
-        - name: sentiment
-          in: query
-          required: false
-          schema:
-            $ref: '#/components/schemas/Sentiment'
         - name: page
           in: query
-          required: false
           schema:
             type: integer
-            minimum: 0
+            format: int64
             default: 0
-          description: Page number (zero-based)
         - name: size
           in: query
-          required: false
           schema:
             type: integer
-            minimum: 1
-            maximum: 200
+            format: int64
             default: 20
-          description: Page size
         - name: sortBy
           in: query
-          required: false
           schema:
             type: string
-            enum: [ id, createdAt, updatedAt, status, priority, category, sentiment, subject ]
             default: createdAt
-          description: Field to sort by
         - name: sortDirection
           in: query
-          required: false
           schema:
             type: string
-            enum: [ ASC, DESC ]
             default: DESC
-          description: Sort direction
       responses:
         '200':
-          description: Paginated list of complaints
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ComplaintListVTO'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
 
   /complaints/{id}:
     get:
       tags: [Complaints]
       operationId: getComplaintById
-      summary: Get single complaint by ID
+      summary: Get complaint by ID
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -125,6 +159,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ComplaintVTO'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -134,6 +170,8 @@ paths:
       tags: [Complaints]
       operationId: updateComplaint
       summary: Update complaint details
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -155,15 +193,19 @@ paths:
                 $ref: '#/components/schemas/ComplaintVTO'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
     delete:
-      tags: [ Complaints ]
+      tags: [Complaints]
       operationId: deleteComplaint
       summary: Delete a complaint by ID
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -174,6 +216,8 @@ paths:
       responses:
         '204':
           description: Complaint deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -183,6 +227,8 @@ paths:
     post:
       tags: [AI Analysis]
       operationId: analyzeComplaint
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -196,6 +242,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ComplaintAnalysisVTO'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -205,6 +253,8 @@ paths:
     post:
       tags: [AI Analysis]
       operationId: generateResponse
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -213,7 +263,6 @@ paths:
             type: integer
             format: int64
       requestBody:
-        required: false
         content:
           application/json:
             schema:
@@ -224,6 +273,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ComplaintResponseVTO'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -233,6 +284,8 @@ paths:
     put:
       tags: [Complaints]
       operationId: updateComplaintStatus
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -254,12 +307,20 @@ paths:
                 $ref: '#/components/schemas/ComplaintVTO'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   responses:
     BadRequest:
       description: Bad request
@@ -267,8 +328,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorVTO'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorVTO'
     NotFound:
-      description: Resource not found
+      description: Not found
       content:
         application/json:
           schema:
@@ -281,7 +348,6 @@ components:
             $ref: '#/components/schemas/ErrorVTO'
 
   schemas:
-
     ComplaintCategory:
       type: string
       enum: [PRODUCT, SHIPPING, PAYMENT, REFUND, OTHER]
@@ -298,42 +364,67 @@ components:
       type: string
       enum: [LOW, MEDIUM, HIGH, URGENT]
 
-    ComplaintCreateDTO:
+    RegisterRequest:
       type: object
-      required: [customerId, customerName, customerEmail, subject, description]
+      required: [name, email, password]
       properties:
-        customerId:
+        name:
           type: string
-          minLength: 1
-          maxLength: 100
-        customerName:
-          type: string
-          minLength: 2
-          maxLength: 100
-        customerEmail:
+        email:
           type: string
           format: email
-          maxLength: 255
+        password:
+          type: string
+        role:
+          type: string
+          enum: [CUSTOMER, EMPLOYEE, MANAGER, ADMIN]
+          default: CUSTOMER
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        userId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [CUSTOMER, EMPLOYEE, MANAGER, ADMIN]
+        tokenType:
+          type: string
+          default: Bearer
+
+    ComplaintCreateDTO:
+      type: object
+      required: [subject, description]
+      properties:
         subject:
           type: string
-          minLength: 5
-          maxLength: 255
         description:
           type: string
-          minLength: 10
-          maxLength: 5000
 
     ComplaintUpdateDTO:
       type: object
       properties:
         subject:
           type: string
-          minLength: 5
-          maxLength: 255
         description:
           type: string
-          minLength: 10
-          maxLength: 5000
         status:
           $ref: '#/components/schemas/ComplaintStatus'
 
@@ -345,10 +436,6 @@ components:
           $ref: '#/components/schemas/ComplaintStatus'
         note:
           type: string
-          maxLength: 500
-
-
-
 
     ResponseGenerationRequestDTO:
       type: object
@@ -362,7 +449,6 @@ components:
           default: false
         customInstructions:
           type: string
-          maxLength: 500
 
     ComplaintVTO:
       type: object
@@ -376,7 +462,6 @@ components:
           type: string
         customerEmail:
           type: string
-          format: email
         subject:
           type: string
         description:
@@ -412,10 +497,13 @@ components:
           format: int64
         totalPages:
           type: integer
+          format: int64
         currentPage:
           type: integer
+          format: int64
         pageSize:
           type: integer
+          format: int64
         hasNext:
           type: boolean
         hasPrevious:
@@ -432,24 +520,16 @@ components:
         categoryConfidence:
           type: number
           format: double
-          minimum: 0.0
-          maximum: 1.0
         sentiment:
           $ref: '#/components/schemas/Sentiment'
         sentimentScore:
           type: number
           format: double
-          minimum: -1.0
-          maximum: 1.0
         priority:
           $ref: '#/components/schemas/Priority'
         urgencyScore:
           type: number
           format: double
-          minimum: 0.0
-          maximum: 1.0
-        urgencyReason:
-          type: string
         keywords:
           type: array
           items:
@@ -478,25 +558,12 @@ components:
           type: array
           items:
             type: string
-        similarComplaintsFound:
-          type: integer
         confidenceScore:
           type: number
           format: double
         generatedAt:
           type: string
           format: date-time
-
-
-    LookupItemVTO:
-      type: object
-      properties:
-        code:
-          type: string
-        name:
-          type: string
-        isActive:
-          type: boolean
 
     ErrorVTO:
       type: object
@@ -512,9 +579,10 @@ components:
           format: date-time
         path:
           type: string
+        status:
+          type: integer
+          format: int64
         details:
           type: array
           items:
             type: string
-        status:
-          type: integer
