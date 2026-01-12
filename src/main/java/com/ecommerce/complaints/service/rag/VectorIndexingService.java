@@ -26,10 +26,10 @@ public class VectorIndexingService implements CommandLineRunner {
     private final VectorRepository vectorRepository;
     private final PoliciesAdapterConfig policiesAdapterConfig;
 
-    private static final int CHUNK_SIZE = 1024;
-    private static final int MIN_CHUNK_LENGTH = 128;
-    private static final int MAX_NUM_CHUNKS = 10000;
-    private static final int MIN_CHUNK_SIZE_CHARS = 200;
+    private static final int CHUNK_SIZE = 300;
+    private static final int MIN_CHUNK_LENGTH = 50;
+    private static final int MAX_NUM_CHUNKS = 50;
+    private static final int MIN_CHUNK_SIZE_CHARS = 100;
 
     @Override
     public void run(String... args) throws Exception {

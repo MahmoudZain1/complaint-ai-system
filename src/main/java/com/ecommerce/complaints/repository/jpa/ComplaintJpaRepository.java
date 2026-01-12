@@ -10,7 +10,4 @@ import java.util.List;
 
 public interface ComplaintJpaRepository extends JpaRepository<Complaint, Long>, JpaSpecificationExecutor<Complaint> {
 
-    List<Complaint> findByStatusOrderByCreatedAtAsc(ComplaintStatus status, Pageable pageable);
-
-    long countByStatus(ComplaintStatus status);
 }

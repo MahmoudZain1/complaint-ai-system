@@ -25,14 +25,9 @@ public class handleResponseGenerationRequest {
 
     @RabbitListener(queues = QUEUE_ANALYSIS_COMPLETED)
     public void handleResponseGenerationRequest(@Payload Map<String, Object> payload){
-        try {
             Long complaintId = Long.valueOf(payload.get("complaintId").toString());
             ComplaintResponseVTO response = aiAnalysisService.generateResponse(complaintId);
             eventPublisher.publishEvent(COMPLAINT_RESPONSE_GENERATED, Map.of("complaintId", response.getComplaintId()));
-        } catch (IOException e) {
-            log.error("Response generation failed for complaint {}", e);
-        }
-
 
     }
 }

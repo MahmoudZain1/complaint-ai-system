@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.ecommerce.complaints.model.enums.UserErrors.USER_NOT_FOUND;
+import static com.ecommerce.complaints.model.error.UserErrors.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

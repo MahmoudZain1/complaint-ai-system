@@ -27,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 import static com.ecommerce.complaints.messaging.event.ComplaintEvent.*;
-import static com.ecommerce.complaints.model.enums.ComplaintErrors.*;
-import static com.ecommerce.complaints.model.enums.UserErrors.INVALID_CREDENTIALS;
+import static com.ecommerce.complaints.model.error.ComplaintErrors.*;
+import static com.ecommerce.complaints.model.error.UserErrors.INVALID_CREDENTIALS;
 
 
 @Service

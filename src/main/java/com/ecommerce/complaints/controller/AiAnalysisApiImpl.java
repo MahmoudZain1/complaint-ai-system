@@ -21,7 +21,7 @@ public class AiAnalysisApiImpl implements AiAnalysisApi {
     }
 
     @Override
-    public ResponseEntity<ComplaintResponseVTO> generateResponse(Long id, ResponseGenerationRequestDTO responseGenerationRequestDTO) throws IOException {
-        return ResponseEntity.ok().body( aiAnalysisService.generateResponse(id));
+    public ResponseEntity<ComplaintResponseVTO> generateResponse(Long id, ResponseGenerationRequestDTO responseGenerationRequestDTO) {
+        return ResponseEntity.ok().body(aiAnalysisService.generateResponse(id));
     }
 }

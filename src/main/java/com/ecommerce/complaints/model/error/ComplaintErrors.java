@@ -1,4 +1,4 @@
-package com.ecommerce.complaints.model.enums;
+package com.ecommerce.complaints.model.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ public enum ComplaintErrors {
     MISSING_REQUIRED_FIELD("MISSING_REQUIRED_FIELD", "{0}"),
     VALIDATION_ERROR("VALIDATION_ERROR", "{0}"),
     DUPLICATE_COMPLAINT("DUPLICATE_COMPLAINT", "Duplicate complaint detected"),
-    RESPONSE_ALREADY_EXISTS("RESPONSE_ALREADY_EXISTS", "Response already exists"),;
+    RESPONSE_ALREADY_EXISTS("RESPONSE_ALREADY_EXISTS", "Response already exists");
 
     private final String code;
     private final String message;

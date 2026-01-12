@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ecommerce.complaints.model.enums.UserErrors.INVALID_EMAIL;
+import static com.ecommerce.complaints.model.error.UserErrors.INVALID_EMAIL;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice

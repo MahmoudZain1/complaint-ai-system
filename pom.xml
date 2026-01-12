@@ -24,6 +24,8 @@
         <spring-crypto-version>6.5.7</spring-crypto-version>
         <jwt-version>0.11.5</jwt-version>
         <jdk15on.version>1.70</jdk15on.version>
+        <spring-mail-version>4.0.0</spring-mail-version>
+
     </properties>
 
     <dependencyManagement>
@@ -158,6 +160,11 @@
 <!--            <artifactId>spring-ai-huggingface</artifactId>-->
 <!--        </dependency>-->
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${spring-mail-version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.ai</groupId>
@@ -252,7 +259,7 @@
                                         <schemaMapping>Priority=com.ecommerce.complaints.model.enums.Priority</schemaMapping>
                                         <schemaMapping>Sentiment=com.ecommerce.complaints.model.enums.Sentiment</schemaMapping>
                                         <schemaMapping>UserRole=com.ecommerce.complaints.model.enums.UserRole</schemaMapping>
-
+                                        <schemaMapping>ResponseStatus=com.ecommerce.complaints.model.enums.ResponseStatus</schemaMapping>
                                     </schemaMappings>
                                 </configuration>
                             </execution>
@@ -299,6 +306,7 @@
                                         <schemaMapping>Priority=com.ecommerce.complaints.model.enums.Priority</schemaMapping>
                                         <schemaMapping>Sentiment=com.ecommerce.complaints.model.enums.Sentiment</schemaMapping>
                                         <schemaMapping>UserRole=com.ecommerce.complaints.model.enums.UserRole</schemaMapping>
+                                        <schemaMapping>ResponseStatus=com.ecommerce.complaints.model.enums.ResponseStatus</schemaMapping>
                                     </schemaMappings>
                                 </configuration>
                             </execution>

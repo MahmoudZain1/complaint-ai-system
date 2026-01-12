@@ -48,17 +48,6 @@ public class ComplaintRepositoryImpl implements ComplaintRepository {
 
 
     @Override
-    public List<Complaint> findByStatus(ComplaintStatus status, int limit) {
-        Pageable pageable = PageRequest.of(0, limit);
-        return jpaRepository.findByStatusOrderByCreatedAtAsc(status, pageable);}
-
-    @Override
-    public long count() {return jpaRepository.count();}
-
-    @Override
-    public long countByStatus(ComplaintStatus status) {return jpaRepository.countByStatus(status);}
-
-    @Override
     public Page<Complaint> findAll(ComplaintStatus status, ComplaintCategory category,
                                    Priority priority, Sentiment sentiment, Pageable pageable) {
         Specification<Complaint> spec = ComplaintSpecs.filtered(status, category, priority, sentiment);

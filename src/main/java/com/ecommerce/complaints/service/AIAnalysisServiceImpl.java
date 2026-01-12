@@ -1,10 +1,10 @@
 package com.ecommerce.complaints.service;
 
 import com.ecommerce.complaints.ai.tools.CustomerTools;
-import com.ecommerce.complaints.config.aspect.annotation.LogClass;
 import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.entity.ComplaintResponse;
+import com.ecommerce.complaints.model.enums.ResponseStatus;
 import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
 import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.ecommerce.complaints.model.enums.ComplaintErrors.COMPLAINT_NOT_FOUND;
-import static com.ecommerce.complaints.model.enums.ComplaintErrors.RESPONSE_ALREADY_EXISTS;
+import static com.ecommerce.complaints.model.error.ComplaintErrors.COMPLAINT_NOT_FOUND;
+import static com.ecommerce.complaints.model.error.ComplaintErrors.RESPONSE_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +47,7 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
     private final ComplaintMapper complaintMapper;
     private final VectorStore vectorStore;
     private final CustomerTools customerTools;
+    private final ResponseApprovalService responseApprovalService;
 
     public void processAiAnalysis(Long complaintId, String content) throws IOException {
         Complaint complaint = complaintRepository.findById(complaintId)
@@ -77,7 +78,7 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
 
     @Override
     @Transactional
-    public ComplaintResponseVTO generateResponse(Long complaintId) throws IOException {
+    public ComplaintResponseVTO generateResponse(Long complaintId) {
         Complaint complaint = complaintRepository.findById(complaintId)
                 .orElseThrow(() -> new BusinessException(COMPLAINT_NOT_FOUND, complaintId));
 
@@ -91,14 +92,19 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
         List<Document> policies = ragContextService.retrievePolicyContext(complaint.getDescription());
         List<Document> similarComplaints = ragContextService.retrieveSimilarComplaints(complaint.getDescription());
 
-        String responsePrompt = promptBuilderService.buildResponsePrompt(
-                complaint.getSubject(),
-                complaint.getDescription(),
-                complaint.getId(),
-                ragContextService.buildContextString(policies),
-                ragContextService.buildContextString(similarComplaints),
-                outputConverter.getFormat()
-        );
+        String responsePrompt = null;
+        try {
+            responsePrompt = promptBuilderService.buildResponsePrompt(
+                    complaint.getSubject(),
+                    complaint.getDescription(),
+                    complaint.getId(),
+                    ragContextService.buildContextString(policies),
+                    ragContextService.buildContextString(similarComplaints),
+                    outputConverter.getFormat()
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         SearchRequest searchRequest = SearchRequestFactory.createForPolicies(complaint.getSubject() + " " + complaint.getDescription());
 
@@ -117,7 +123,11 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
         response.setComplaintId(complaint.getId());
         ComplaintResponse entity = complaintMapper.toEntity(response);
         entity.setComplaint(complaint);
-        complaintResponseRepository.save(entity);
+        entity.setStatus(ResponseStatus.PENDING_APPROVAL);
+        entity.setGeneratedAt(LocalDateTime.now());
+        ComplaintResponse saved = complaintResponseRepository.save(entity);
+        responseApprovalService.processGeneratedResponse(saved);
+
         return response;
     }
 

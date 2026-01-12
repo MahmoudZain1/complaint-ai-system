@@ -1,4 +1,4 @@
-package com.ecommerce.complaints.model.enums;
+package com.ecommerce.complaints.model.error;
 
 
 import lombok.AllArgsConstructor;

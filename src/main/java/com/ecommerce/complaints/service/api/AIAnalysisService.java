@@ -10,6 +10,6 @@ public interface AIAnalysisService {
 
     ComplaintAnalysisVTO analyzeComplaint(Complaint complaint) throws IOException;
     void processAiAnalysis(Long complaintId, String content) throws IOException;
-    ComplaintResponseVTO generateResponse(Long complaintId) throws IOException;
+    ComplaintResponseVTO generateResponse(Long complaintId) ;
 
 }

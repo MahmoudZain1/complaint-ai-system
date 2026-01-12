@@ -5,10 +5,10 @@
  */
 package com.ecommerce.complaints.controller.api;
 
-import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
-import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 import com.ecommerce.complaints.model.generate.ErrorVTO;
-import com.ecommerce.complaints.model.generate.ResponseGenerationRequestDTO;
+import com.ecommerce.complaints.model.generate.GetPendingCount200Response;
+import com.ecommerce.complaints.model.generate.ResponseApprovalDTO;
+import com.ecommerce.complaints.model.generate.ResponseReviewVTO;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,29 +37,25 @@ import jakarta.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 @Validated
-@Tag(name = "AI Analysis", description = "the AI Analysis API")
-public interface AiAnalysisApi {
+@Tag(name = "Response Approval", description = "the Response Approval API")
+public interface ResponseApprovalApi {
 
     /**
-     * POST /complaints/{id}/analyze
+     * GET /complaints/responses/pending : Get pending responses for approval
      *
-     * @param id  (required)
-     * @return  (status code 200)
+     * @return List of pending responses (status code 200)
      *         or Unauthorized (status code 401)
-     *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
-        operationId = "analyzeComplaint",
-        tags = { "AI Analysis" },
+        operationId = "getPendingApprovals",
+        summary = "Get pending responses for approval",
+        tags = { "Response Approval" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintAnalysisVTO.class))
+            @ApiResponse(responseCode = "200", description = "List of pending responses", content = {
+                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ResponseReviewVTO.class)))
             }),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
-            }),
-            @ApiResponse(responseCode = "404", description = "Not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = {
@@ -71,31 +67,71 @@ public interface AiAnalysisApi {
         }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/complaints/{id}/analyze",
+        method = RequestMethod.GET,
+        value = "/complaints/responses/pending",
         produces = { "application/json" }
     )
-    ResponseEntity<ComplaintAnalysisVTO> analyzeComplaint(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Long id
+    ResponseEntity<List<ResponseReviewVTO>> getPendingApprovals(
+        
     );
 
 
     /**
-     * POST /complaints/{id}/generate-response
+     * GET /complaints/responses/pending/count : Get count of pending responses
      *
-     * @param id  (required)
-     * @param responseGenerationRequestDTO  (optional)
-     * @return  (status code 200)
+     * @return Count of pending responses (status code 200)
+     *         or Unauthorized (status code 401)
+     *         or Internal server error (status code 500)
+     */
+    @Operation(
+        operationId = "getPendingCount",
+        summary = "Get count of pending responses",
+        tags = { "Response Approval" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Count of pending responses", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = GetPendingCount200Response.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
+            })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/complaints/responses/pending/count",
+        produces = { "application/json" }
+    )
+    ResponseEntity<GetPendingCount200Response> getPendingCount(
+        
+    );
+
+
+    /**
+     * POST /complaints/responses/review : Review and approve/reject/edit response
+     *
+     * @param responseApprovalDTO  (required)
+     * @return Response reviewed successfully (status code 200)
+     *         or Bad request (status code 400)
      *         or Unauthorized (status code 401)
      *         or Not found (status code 404)
      *         or Internal server error (status code 500)
      */
     @Operation(
-        operationId = "generateResponse",
-        tags = { "AI Analysis" },
+        operationId = "reviewResponse",
+        summary = "Review and approve/reject/edit response",
+        tags = { "Response Approval" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ComplaintResponseVTO.class))
+            @ApiResponse(responseCode = "200", description = "Response reviewed successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseReviewVTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
             }),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorVTO.class))
@@ -113,13 +149,12 @@ public interface AiAnalysisApi {
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/complaints/{id}/generate-response",
+        value = "/complaints/responses/review",
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<ComplaintResponseVTO> generateResponse(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Long id,
-        @Parameter(name = "ResponseGenerationRequestDTO", description = "") @Valid @RequestBody(required = false) ResponseGenerationRequestDTO responseGenerationRequestDTO
+    ResponseEntity<ResponseReviewVTO> reviewResponse(
+        @Parameter(name = "ResponseApprovalDTO", description = "", required = true) @Valid @RequestBody ResponseApprovalDTO responseApprovalDTO
     );
 
 }
