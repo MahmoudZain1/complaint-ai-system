@@ -5,3 +5,4 @@ prompt:
   urgency-prompt: "classpath:prompts/urgency-detection.prompt"
   keywords-prompt: "classpath:prompts/keyword-extraction.prompt"
   response-prompt: "classpath:prompts/Response.prompt"
+  rewriteQuery: "classpath:prompts/rewrite-query-template.st"

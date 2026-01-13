@@ -17,9 +17,6 @@ public interface ComplaintRepository {
     Complaint update(Complaint complaint);
     Optional<Complaint> findById(Long id);
     void delete (Long id);
-    List<Complaint> findByStatus(ComplaintStatus status, int limit);
-    long count();
-    long countByStatus(ComplaintStatus status);
     Page<Complaint> findAll(ComplaintStatus status, ComplaintCategory category,
                             Priority priority, Sentiment sentiment, Pageable pageable);
 }

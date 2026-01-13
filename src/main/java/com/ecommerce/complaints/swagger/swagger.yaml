@@ -13,6 +13,7 @@ tags:
   - name: Complaints
   - name: AI Analysis
   - name: Auth
+  - name: Response Approval
 
 paths:
   /auth/register:
@@ -314,6 +315,79 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /complaints/responses/pending:
+    get:
+      tags: [Response Approval]
+      operationId: getPendingApprovals
+      summary: Get pending responses for approval
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of pending responses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseReviewVTO'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /complaints/responses/pending/count:
+    get:
+      tags: [Response Approval]
+      operationId: getPendingCount
+      summary: Get count of pending responses
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Count of pending responses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pendingCount:
+                    type: integer
+                    format: int64
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /complaints/responses/review:
+    post:
+      tags: [Response Approval]
+      operationId: reviewResponse
+      summary: Review and approve/reject/edit response
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseApprovalDTO'
+      responses:
+        '200':
+          description: Response reviewed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseReviewVTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -363,6 +437,10 @@ components:
     Priority:
       type: string
       enum: [LOW, MEDIUM, HIGH, URGENT]
+
+    ResponseStatus:
+      type: string
+      enum: [PENDING_APPROVAL, APPROVED, REJECTED, EDITED, SENT]
 
     RegisterRequest:
       type: object
@@ -448,6 +526,49 @@ components:
           type: boolean
           default: false
         customInstructions:
+          type: string
+
+    ResponseApprovalDTO:
+      type: object
+      required: [responseId, action]
+      properties:
+        responseId:
+          type: integer
+          format: int64
+        action:
+          type: string
+          enum: [APPROVE, REJECT, EDIT]
+        rejectionReason:
+          type: string
+        editedResponse:
+          type: string
+
+    ResponseReviewVTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        complaintId:
+          type: integer
+          format: int64
+        complaintSubject:
+          type: string
+        customerName:
+          type: string
+        generatedResponse:
+          type: string
+        tone:
+          type: string
+        confidenceScore:
+          type: number
+          format: double
+        generatedAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/ResponseStatus'
+        priority:
           type: string
 
     ComplaintVTO:

@@ -1,14 +1,12 @@
 package com.ecommerce.complaints.exception;
 
-import com.ecommerce.complaints.model.enums.ComplaintErrors;
-import com.ecommerce.complaints.model.enums.UserErrors;
+import com.ecommerce.complaints.model.error.ComplaintErrors;
+import com.ecommerce.complaints.model.error.ResponseErrors;
+import com.ecommerce.complaints.model.error.UserErrors;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.text.MessageFormat;
-
-import static com.ecommerce.complaints.model.enums.ComplaintErrors.*;
-import static com.ecommerce.complaints.model.enums.UserErrors.*;
 
 
 @Getter
@@ -29,6 +27,11 @@ public class BusinessException extends RuntimeException {
         this.httpStatus = determineHttpStatus(error.getCode());
     }
 
+    public BusinessException(ResponseErrors error, Object... args) {
+        super(MessageFormat.format(error.getMessage(), args));
+        this.errorCode = error.getCode();
+        this.httpStatus = determineHttpStatus(error.getCode());
+    }
 
 
     private HttpStatus determineHttpStatus(String code) {

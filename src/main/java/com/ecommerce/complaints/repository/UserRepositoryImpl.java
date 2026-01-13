@@ -1,12 +1,14 @@
 package com.ecommerce.complaints.repository;
 
 import com.ecommerce.complaints.model.entity.User;
+import com.ecommerce.complaints.model.enums.UserRole;
 import com.ecommerce.complaints.repository.api.UserRepository;
 import com.ecommerce.complaints.repository.jpa.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -32,4 +34,9 @@ public class UserRepositoryImpl  implements UserRepository {
 
     @Override
     public void deleteById(Long id) {jpaRepository.deleteById(id);}
+
+    @Override
+    public List<User> findByRoleIn(List<UserRole> roles) {return jpaRepository.findByRoleIn(roles);}
+    @Override
+    public List<User> findByRole(UserRole role) {return jpaRepository.findByRole(role);}
 }

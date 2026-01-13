@@ -14,8 +14,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.RestClient;
 
 import static com.ecommerce.complaints.integration.common.TestData.*;
-import static com.ecommerce.complaints.model.enums.ComplaintErrors.*;
-import static com.ecommerce.complaints.model.enums.UserErrors.INVALID_EMAIL;
+import static com.ecommerce.complaints.model.error.ComplaintErrors.*;
+import static com.ecommerce.complaints.model.error.UserErrors.INVALID_EMAIL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;

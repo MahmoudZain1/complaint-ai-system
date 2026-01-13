@@ -24,4 +24,5 @@ public class PromptAdapterConfig {
     private Resource urgencyPrompt;
     private Resource keywordsPrompt;
     private Resource responsePrompt;
+    private Resource rewriteQuery;
 }

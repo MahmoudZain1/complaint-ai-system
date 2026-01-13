@@ -18,7 +18,4 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     User toEntity(RegisterRequest request);
 
-     UserVTO toVTO(User entity);
-
-
 }

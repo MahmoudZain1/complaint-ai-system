@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.8</version>
+        <version>3.2.5</version>
         <relativePath/>
     </parent>
     <groupId>com.ecommerce</groupId>
@@ -17,6 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <spring-ai.version>1.0.0</spring-ai.version>
+        <spring-core.version>1.0.0-M6</spring-core.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
         <swagger.version>2.2.15</swagger.version>
@@ -24,7 +25,11 @@
         <spring-crypto-version>6.5.7</spring-crypto-version>
         <jwt-version>0.11.5</jwt-version>
         <jdk15on.version>1.70</jdk15on.version>
+        <spring-mail-version>4.0.0</spring-mail-version>
+
     </properties>
+
+
 
     <dependencyManagement>
         <dependencies>
@@ -56,6 +61,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-rag</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-client-chat</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -104,6 +120,12 @@
 
 
         <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-core</artifactId>
+            <version>${spring-core.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger.version}</version>
@@ -150,7 +172,6 @@
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-model-chat-memory-repository-jdbc</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
 <!--        <dependency>-->
@@ -158,6 +179,11 @@
 <!--            <artifactId>spring-ai-huggingface</artifactId>-->
 <!--        </dependency>-->
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${spring-mail-version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.ai</groupId>
@@ -252,7 +278,7 @@
                                         <schemaMapping>Priority=com.ecommerce.complaints.model.enums.Priority</schemaMapping>
                                         <schemaMapping>Sentiment=com.ecommerce.complaints.model.enums.Sentiment</schemaMapping>
                                         <schemaMapping>UserRole=com.ecommerce.complaints.model.enums.UserRole</schemaMapping>
-
+                                        <schemaMapping>ResponseStatus=com.ecommerce.complaints.model.enums.ResponseStatus</schemaMapping>
                                     </schemaMappings>
                                 </configuration>
                             </execution>
@@ -299,6 +325,7 @@
                                         <schemaMapping>Priority=com.ecommerce.complaints.model.enums.Priority</schemaMapping>
                                         <schemaMapping>Sentiment=com.ecommerce.complaints.model.enums.Sentiment</schemaMapping>
                                         <schemaMapping>UserRole=com.ecommerce.complaints.model.enums.UserRole</schemaMapping>
+                                        <schemaMapping>ResponseStatus=com.ecommerce.complaints.model.enums.ResponseStatus</schemaMapping>
                                     </schemaMappings>
                                 </configuration>
                             </execution>

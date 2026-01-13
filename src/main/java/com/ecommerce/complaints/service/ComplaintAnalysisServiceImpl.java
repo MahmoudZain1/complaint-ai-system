@@ -1,28 +1,23 @@
 package com.ecommerce.complaints.service;
 
-import com.ecommerce.complaints.ai.tools.CustomerTools;
-import com.ecommerce.complaints.config.aspect.annotation.LogClass;
 import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.entity.ComplaintResponse;
+import com.ecommerce.complaints.model.enums.ResponseStatus;
 import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
 import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import com.ecommerce.complaints.repository.api.ComplaintResponseRepository;
-import com.ecommerce.complaints.service.api.AIAnalysisService;
+import com.ecommerce.complaints.service.api.ComplaintAnalysisService;
 import com.ecommerce.complaints.service.formatter.AnalysisFormatter;
 import com.ecommerce.complaints.service.mapper.ComplaintMapper;
 import com.ecommerce.complaints.service.rag.PromptBuilderService;
 import com.ecommerce.complaints.service.rag.RAGContextService;
-import com.ecommerce.complaints.util.SearchRequestFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,23 +25,19 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.ecommerce.complaints.model.enums.ComplaintErrors.COMPLAINT_NOT_FOUND;
-import static com.ecommerce.complaints.model.enums.ComplaintErrors.RESPONSE_ALREADY_EXISTS;
+import static com.ecommerce.complaints.model.error.ComplaintErrors.COMPLAINT_NOT_FOUND;
+import static com.ecommerce.complaints.model.error.ComplaintErrors.RESPONSE_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AIAnalysisServiceImpl implements AIAnalysisService {
+public class ComplaintAnalysisServiceImpl implements ComplaintAnalysisService {
 
-    private final ChatClient.Builder chatClientBuilder;
     private final PromptBuilderService promptBuilderService;
     private final AnalysisFormatter analysisFormatter;
     private final RAGContextService ragContextService;
     private final ComplaintRepository complaintRepository;
-    private final ComplaintResponseRepository complaintResponseRepository;
-    private final ComplaintMapper complaintMapper;
-    private final VectorStore vectorStore;
-    private final CustomerTools customerTools;
+    private final ChatClient chatClient;
 
     public void processAiAnalysis(Long complaintId, String content) throws IOException {
         Complaint complaint = complaintRepository.findById(complaintId)
@@ -66,59 +57,13 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
         String fullPrompt = promptBuilderService.buildAnalysisPrompt(complaint.getSubject(),
                 complaint.getDescription(), policyContext,outputConverter.getFormat());
 
-        ComplaintAnalysisVTO analysis = chatClientBuilder.build()
+        ComplaintAnalysisVTO analysis = chatClient
                 .prompt().user(fullPrompt)
                 .call().entity(ComplaintAnalysisVTO.class);
 
         analysis.setComplaintId(complaint.getId());
         analysis.setAnalyzedAt(LocalDateTime.now());
         return analysis;
-    }
-
-    @Override
-    @Transactional
-    public ComplaintResponseVTO generateResponse(Long complaintId) throws IOException {
-        Complaint complaint = complaintRepository.findById(complaintId)
-                .orElseThrow(() -> new BusinessException(COMPLAINT_NOT_FOUND, complaintId));
-
-        if (complaintResponseRepository.existsByComplaintId(complaintId)) {
-            throw new BusinessException(RESPONSE_ALREADY_EXISTS, complaintId);
-        }
-
-        BeanOutputConverter<ComplaintResponseVTO> outputConverter =
-                new BeanOutputConverter<>(ComplaintResponseVTO.class);
-
-        List<Document> policies = ragContextService.retrievePolicyContext(complaint.getDescription());
-        List<Document> similarComplaints = ragContextService.retrieveSimilarComplaints(complaint.getDescription());
-
-        String responsePrompt = promptBuilderService.buildResponsePrompt(
-                complaint.getSubject(),
-                complaint.getDescription(),
-                complaint.getId(),
-                ragContextService.buildContextString(policies),
-                ragContextService.buildContextString(similarComplaints),
-                outputConverter.getFormat()
-        );
-
-        SearchRequest searchRequest = SearchRequestFactory.createForPolicies(complaint.getSubject() + " " + complaint.getDescription());
-
-        ChatClient chatClient = chatClientBuilder
-                .defaultAdvisors(
-                        QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(searchRequest)
-                                .build()
-                ).build();
-
-
-        ComplaintResponseVTO response = chatClient
-                .prompt().user(responsePrompt)
-                .call().entity(ComplaintResponseVTO.class);
-
-        response.setComplaintId(complaint.getId());
-        ComplaintResponse entity = complaintMapper.toEntity(response);
-        entity.setComplaint(complaint);
-        complaintResponseRepository.save(entity);
-        return response;
     }
 
     private void updateComplaintWithAnalysis(Complaint complaint, ComplaintAnalysisVTO analysis) {

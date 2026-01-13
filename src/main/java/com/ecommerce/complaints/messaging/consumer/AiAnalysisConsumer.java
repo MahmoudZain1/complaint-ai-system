@@ -3,7 +3,7 @@ package com.ecommerce.complaints.messaging.consumer;
 import com.ecommerce.complaints.messaging.api.RabbitMQEventPublisher;
 import com.ecommerce.complaints.messaging.event.ComplaintAiAnalysiEvent;
 
-import com.ecommerce.complaints.service.api.AIAnalysisService;
+import com.ecommerce.complaints.service.api.ComplaintAnalysisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -21,13 +21,13 @@ import static com.ecommerce.complaints.messaging.event.ComplaintEvent.COMPLAINT_
 @Slf4j
 public class AiAnalysisConsumer {
 
-    private final AIAnalysisService aiAnalysisService;
+    private final ComplaintAnalysisService complaintAnalysisService;
     private final RabbitMQEventPublisher eventPublisher;
 
     @RabbitListener(queues = QUEUE_COMPLAINT_CREATED)
     public void handleAiAnalysisRequest(@Payload ComplaintAiAnalysiEvent event) {
         try {
-            aiAnalysisService.processAiAnalysis(event.getComplaintId(), event.getContent());
+            complaintAnalysisService.processAiAnalysis(event.getComplaintId(), event.getContent());
             eventPublisher.publishEvent(COMPLAINT_ANALYSIS_COMPLETED, Map.of("complaintId", event.getComplaintId()));
         } catch (Exception ex) {
             log.error("Analysis failed for complaint {}", event.getComplaintId(), ex);
