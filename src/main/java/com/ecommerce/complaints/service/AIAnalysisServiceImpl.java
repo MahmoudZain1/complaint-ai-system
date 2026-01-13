@@ -38,15 +38,13 @@ import static com.ecommerce.complaints.model.error.ComplaintErrors.RESPONSE_ALRE
 @Slf4j
 public class AIAnalysisServiceImpl implements AIAnalysisService {
 
-    private final ChatClient.Builder chatClientBuilder;
     private final PromptBuilderService promptBuilderService;
     private final AnalysisFormatter analysisFormatter;
     private final RAGContextService ragContextService;
     private final ComplaintRepository complaintRepository;
     private final ComplaintResponseRepository complaintResponseRepository;
     private final ComplaintMapper complaintMapper;
-    private final VectorStore vectorStore;
-    private final CustomerTools customerTools;
+    private final ChatClient chatClient;
     private final ResponseApprovalService responseApprovalService;
 
     public void processAiAnalysis(Long complaintId, String content) throws IOException {
@@ -67,7 +65,7 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
         String fullPrompt = promptBuilderService.buildAnalysisPrompt(complaint.getSubject(),
                 complaint.getDescription(), policyContext,outputConverter.getFormat());
 
-        ComplaintAnalysisVTO analysis = chatClientBuilder.build()
+        ComplaintAnalysisVTO analysis = chatClient
                 .prompt().user(fullPrompt)
                 .call().entity(ComplaintAnalysisVTO.class);
 
@@ -106,14 +104,15 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
             throw new RuntimeException(e);
         }
 
-        SearchRequest searchRequest = SearchRequestFactory.createForPolicies(complaint.getSubject() + " " + complaint.getDescription());
+//        SearchRequest searchRequest = SearchRequestFactory.createForPolicies(complaint.getSubject() + " " + complaint.getDescription());
 
-        ChatClient chatClient = chatClientBuilder
-                .defaultAdvisors(
-                        QuestionAnswerAdvisor.builder(vectorStore)
-                                .searchRequest(searchRequest)
-                                .build()
-                ).build();
+//        ChatClient chatClient = chatClientBuilder
+//                .defaultTools(customerTools)
+//                .defaultAdvisors(
+//                        QuestionAnswerAdvisor.builder(vectorStore)
+//                                .searchRequest(searchRequest)
+//                                .build()
+//                ).build();
 
 
         ComplaintResponseVTO response = chatClient

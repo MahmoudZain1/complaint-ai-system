@@ -50,10 +50,6 @@ public class AnalysisFormatter {
                     .append(")");
         }
         text.append("\n");
-
-//        if (analysis.getUrgencyReason() != null && !analysis.getUrgencyReason().isEmpty()) {
-//            text.append("   Reason: ").append(analysis.getUrgencyReason());
-//        }
         text.append("\n\n");
     }
 

@@ -6,7 +6,6 @@ import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -17,7 +16,6 @@ public class CustomerTools {
 
 
     private final ComplaintRepository complaintRepository;
-    private final VectorStore vectorStore;
 
 
     @Tool(name = "getCustomerName", description = "Get customer name from complaint by ID")

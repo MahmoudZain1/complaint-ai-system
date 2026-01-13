@@ -28,9 +28,6 @@ public class RAGContextService {
         return vectorRepository.similaritySearch(request);
     }
 
-    public List<Document> retrieveFromSource(String query, DocumentSource source, int topK) {
-        return vectorRepository.searchBySource(query, source, topK);
-    }
 
     public String buildContextString(List<Document> documents) {
         StringBuilder context = new StringBuilder();

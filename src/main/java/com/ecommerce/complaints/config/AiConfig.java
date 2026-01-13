@@ -2,7 +2,9 @@ package com.ecommerce.complaints.config;
 
 
 import com.ecommerce.complaints.ai.tools.CustomerTools;
+import org.hibernate.sql.ast.tree.expression.QueryTransformer;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.transformers.TransformersEmbeddingModel;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
-public class ChatConfig {
+public class AiConfig {
 
     @Value("${spring.ai.vectorstore.pgvector.dimensions:384}")
     private int dimensions;
@@ -43,6 +45,17 @@ public class ChatConfig {
                 .initializeSchema(initializeSchema)
                 .build();
     }
+
+    @Bean
+    public ChatClient chatClient(ChatClient.Builder chatClientBuilder,
+                                 VectorStore vectorStore,
+                                 CustomerTools customerTools) {
+        return chatClientBuilder
+                .defaultAdvisors(new QuestionAnswerAdvisor(vectorStore))
+                .defaultTools(customerTools)
+                .build();
+    }
+
 
 
 }
