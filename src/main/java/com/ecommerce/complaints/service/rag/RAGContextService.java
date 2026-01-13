@@ -6,6 +6,8 @@ import com.ecommerce.complaints.repository.api.VectorRepository;
 import com.ecommerce.complaints.util.SearchRequestFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.rag.Query;
+import org.springframework.ai.rag.preretrieval.query.transformation.QueryTransformer;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +19,17 @@ import java.util.stream.Collectors;
 public class RAGContextService {
 
     private final VectorRepository vectorRepository;
+    private final QueryTransformer queryTransformer;
 
     public List<Document> retrievePolicyContext(String complaintText) {
-        SearchRequest request = SearchRequestFactory.createForPolicies(complaintText);
+        Query transformedQuery = queryTransformer.transform(new Query(complaintText));
+        SearchRequest request = SearchRequestFactory.createForPolicies(transformedQuery.text());
         return vectorRepository.similaritySearch(request);
     }
 
     public List<Document> retrieveSimilarComplaints(String complaintText) {
-        SearchRequest request = SearchRequestFactory.createForComplaints(complaintText);
+        Query transformedQuery = queryTransformer.transform(new Query(complaintText));
+        SearchRequest request = SearchRequestFactory.createForComplaints(transformedQuery.text());
         return vectorRepository.similaritySearch(request);
     }
 

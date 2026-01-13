@@ -6,10 +6,9 @@ import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 
 import java.io.IOException;
 
-public interface AIAnalysisService {
+public interface ComplaintAnalysisService {
 
     ComplaintAnalysisVTO analyzeComplaint(Complaint complaint) throws IOException;
     void processAiAnalysis(Long complaintId, String content) throws IOException;
-    ComplaintResponseVTO generateResponse(Long complaintId) ;
 
 }

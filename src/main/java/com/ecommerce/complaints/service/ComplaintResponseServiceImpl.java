@@ -1,28 +1,21 @@
 package com.ecommerce.complaints.service;
 
-import com.ecommerce.complaints.ai.tools.CustomerTools;
 import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.entity.ComplaintResponse;
 import com.ecommerce.complaints.model.enums.ResponseStatus;
-import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
 import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import com.ecommerce.complaints.repository.api.ComplaintResponseRepository;
-import com.ecommerce.complaints.service.api.AIAnalysisService;
-import com.ecommerce.complaints.service.formatter.AnalysisFormatter;
+import com.ecommerce.complaints.service.api.ComplaintResponseService;
 import com.ecommerce.complaints.service.mapper.ComplaintMapper;
 import com.ecommerce.complaints.service.rag.PromptBuilderService;
 import com.ecommerce.complaints.service.rag.RAGContextService;
-import com.ecommerce.complaints.util.SearchRequestFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,43 +29,16 @@ import static com.ecommerce.complaints.model.error.ComplaintErrors.RESPONSE_ALRE
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AIAnalysisServiceImpl implements AIAnalysisService {
+public class ComplaintResponseServiceImpl implements ComplaintResponseService {
 
-    private final PromptBuilderService promptBuilderService;
-    private final AnalysisFormatter analysisFormatter;
-    private final RAGContextService ragContextService;
-    private final ComplaintRepository complaintRepository;
     private final ComplaintResponseRepository complaintResponseRepository;
     private final ComplaintMapper complaintMapper;
     private final ChatClient chatClient;
+    private final PromptBuilderService promptBuilderService;
+    private final RAGContextService ragContextService;
     private final ResponseApprovalService responseApprovalService;
+    private final ComplaintRepository complaintRepository;
 
-    public void processAiAnalysis(Long complaintId, String content) throws IOException {
-        Complaint complaint = complaintRepository.findById(complaintId)
-                .orElseThrow(() -> new BusinessException(COMPLAINT_NOT_FOUND, complaintId));
-        ComplaintAnalysisVTO analysis = analyzeComplaint(complaint);
-        updateComplaintWithAnalysis(complaint, analysis);
-        complaintRepository.update(complaint);
-    }
-
-    @Override
-    public ComplaintAnalysisVTO analyzeComplaint(Complaint complaint) throws IOException {
-        BeanOutputConverter<ComplaintAnalysisVTO> outputConverter =
-                new BeanOutputConverter<>(ComplaintAnalysisVTO.class);
-        String policyContext = ragContextService.getPolicyContextForResponse(
-                complaint.getDescription()
-        );
-        String fullPrompt = promptBuilderService.buildAnalysisPrompt(complaint.getSubject(),
-                complaint.getDescription(), policyContext,outputConverter.getFormat());
-
-        ComplaintAnalysisVTO analysis = chatClient
-                .prompt().user(fullPrompt)
-                .call().entity(ComplaintAnalysisVTO.class);
-
-        analysis.setComplaintId(complaint.getId());
-        analysis.setAnalyzedAt(LocalDateTime.now());
-        return analysis;
-    }
 
     @Override
     @Transactional
@@ -104,17 +70,6 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
             throw new RuntimeException(e);
         }
 
-//        SearchRequest searchRequest = SearchRequestFactory.createForPolicies(complaint.getSubject() + " " + complaint.getDescription());
-
-//        ChatClient chatClient = chatClientBuilder
-//                .defaultTools(customerTools)
-//                .defaultAdvisors(
-//                        QuestionAnswerAdvisor.builder(vectorStore)
-//                                .searchRequest(searchRequest)
-//                                .build()
-//                ).build();
-
-
         ComplaintResponseVTO response = chatClient
                 .prompt().user(responsePrompt)
                 .call().entity(ComplaintResponseVTO.class);
@@ -129,13 +84,4 @@ public class AIAnalysisServiceImpl implements AIAnalysisService {
 
         return response;
     }
-
-    private void updateComplaintWithAnalysis(Complaint complaint, ComplaintAnalysisVTO analysis) {
-        complaint.setCategory(analysis.getCategory());
-        complaint.setSentiment(analysis.getSentiment());
-        complaint.setPriority(analysis.getPriority());
-        String analysisText = analysisFormatter.formatAnalysis(analysis);
-        complaint.setAiAnalysis(analysisText);
-    }
-
 }

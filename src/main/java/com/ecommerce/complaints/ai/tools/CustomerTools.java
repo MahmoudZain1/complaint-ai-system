@@ -6,6 +6,7 @@ import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class CustomerTools {
 
 
     @Tool(name = "getCustomerName", description = "Get customer name from complaint by ID")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getCustomerName(@ToolParam(description = "Complaint ID") Long complaintId) {
         Optional<Complaint> complaint = complaintRepository.findById(complaintId);
         User customer = complaint.get().getCustomer();
