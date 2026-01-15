@@ -14,7 +14,6 @@ import org.mapstruct.*;
 )
 public interface UserMapper {
 
-
     @Mapping(target = "role", ignore = true)
     User toEntity(RegisterRequest request);
 

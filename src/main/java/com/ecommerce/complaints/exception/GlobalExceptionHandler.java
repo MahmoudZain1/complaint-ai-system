@@ -1,5 +1,6 @@
 package com.ecommerce.complaints.exception;
 
+import com.ecommerce.complaints.model.error.UserErrors;
 import com.ecommerce.complaints.model.generate.ErrorVTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorVTO> handleBusinessException(BusinessException ex, WebRequest request) {
         ErrorVTO error = ErrorVTO.builder()
+                .code(ex.getErrorCode())
                 .error(ex.getErrorCode())
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
@@ -38,9 +40,9 @@ public class GlobalExceptionHandler {
 
         boolean isEmailError = ex.getBindingResult()
                 .getFieldErrors().stream()
-                .anyMatch(error -> "customerEmail".equals(error.getField()));
+                .anyMatch(error -> "email".equals(error.getField()));
         ErrorVTO error = ErrorVTO.builder()
-        .error(isEmailError ? INVALID_EMAIL.name() : "VALIDATION_ERROR")
+        .error(isEmailError ? INVALID_EMAIL.name() : "VALIDATION_ERROR").code(INVALID_EMAIL.getCode())
         .message("Validation failed")
         .timestamp(LocalDateTime.now())
         .path(request.getDescription(false).replace("uri=", ""))
