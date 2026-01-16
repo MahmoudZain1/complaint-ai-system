@@ -33,7 +33,7 @@ public class AiConfig {
     @Value("${spring.ai.vectorstore.pgvector.dimensions:384}")
     private int dimensions;
 
-    @Value("${spring.ai.vectaorstore.pgvector.distance-type:COSINE_DISTANCE}")
+    @Value("${spring.ai.vectorstore.pgvector.distance-type:COSINE_DISTANCE}")
     private String distanceType;
 
     @Value("${spring.ai.vectorstore.pgvector.index-type:HNSW}")

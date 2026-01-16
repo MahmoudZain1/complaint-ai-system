@@ -46,6 +46,9 @@ public class ComplaintRepositoryImpl implements ComplaintRepository {
     @Override
     public void delete(Long id) {jpaRepository.deleteById(id);}
 
+    @Override
+    public long count() {return jpaRepository.count();}
+
 
     @Override
     public Page<Complaint> findAll(ComplaintStatus status, ComplaintCategory category,

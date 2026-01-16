@@ -30,6 +30,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/complaints/**").hasAnyRole("MANAGER", "ADMIN")
+                       .requestMatchers(HttpMethod.GET, "/complaints/responses/pending").hasAnyRole("MANAGER", "ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
