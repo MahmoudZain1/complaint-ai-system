@@ -10,7 +10,6 @@ import com.ecommerce.complaints.model.generate.ErrorVTO;
 import com.ecommerce.complaints.model.generate.LoginRequest;
 import com.ecommerce.complaints.model.generate.RegisterRequest;
 import com.ecommerce.complaints.repository.api.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +22,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthIntegrationTest {
 
@@ -43,6 +40,7 @@ public class AuthIntegrationTest {
     PasswordEncoder passwordEncoder;
 
    private RestClient authClient;
+
 
     @BeforeEach
     void setUp() {
