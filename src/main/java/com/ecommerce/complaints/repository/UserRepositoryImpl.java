@@ -39,4 +39,7 @@ public class UserRepositoryImpl  implements UserRepository {
     public List<User> findByRoleIn(List<UserRole> roles) {return jpaRepository.findByRoleIn(roles);}
     @Override
     public List<User> findByRole(UserRole role) {return jpaRepository.findByRole(role);}
+
+    @Override
+    public long count() {return jpaRepository.count();}
 }

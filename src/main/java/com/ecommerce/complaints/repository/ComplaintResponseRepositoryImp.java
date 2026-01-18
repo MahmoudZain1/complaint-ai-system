@@ -42,4 +42,10 @@ public class ComplaintResponseRepositoryImp implements ComplaintResponseReposito
     public long countByStatus(ResponseStatus status) {
         return repository.countByStatus(status);
     }
+
+    @Override
+    public long count() {return repository.count();}
+
+    @Override
+    public List<ComplaintResponse> findAll() {return repository.findAll();}
 }

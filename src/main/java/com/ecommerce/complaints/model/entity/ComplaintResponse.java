@@ -56,5 +56,5 @@ public class ComplaintResponse {
     private LocalDateTime sentAt;
 
     @Column(name = "auto_approved")
-    private boolean autoApproved = false;
+    private Boolean autoApproved = false;
 }

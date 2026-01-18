@@ -4,6 +4,7 @@ import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.entity.ComplaintResponse;
 import com.ecommerce.complaints.model.enums.ResponseStatus;
+import com.ecommerce.complaints.model.error.ComplaintErrors;
 import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
 import com.ecommerce.complaints.model.generate.ComplaintResponseVTO;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
@@ -56,14 +57,18 @@ public class ComplaintAnalysisServiceImpl implements ComplaintAnalysisService {
         );
         String fullPrompt = promptBuilderService.buildAnalysisPrompt(complaint.getSubject(),
                 complaint.getDescription(), policyContext,outputConverter.getFormat());
+        try {
+            ComplaintAnalysisVTO analysis = chatClient
+                    .prompt().user(fullPrompt)
+                    .call().entity(ComplaintAnalysisVTO.class);
 
-        ComplaintAnalysisVTO analysis = chatClient
-                .prompt().user(fullPrompt)
-                .call().entity(ComplaintAnalysisVTO.class);
+            analysis.setComplaintId(complaint.getId());
+            analysis.setAnalyzedAt(LocalDateTime.now());
+            return analysis;
+        }catch (Exception e){
+        throw new BusinessException(ComplaintErrors.AI_ANALYSIS_FAILED, e.getMessage());
+    }
 
-        analysis.setComplaintId(complaint.getId());
-        analysis.setAnalyzedAt(LocalDateTime.now());
-        return analysis;
     }
 
     private void updateComplaintWithAnalysis(Complaint complaint, ComplaintAnalysisVTO analysis) {

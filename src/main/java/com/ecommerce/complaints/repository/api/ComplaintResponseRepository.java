@@ -13,4 +13,6 @@ public interface ComplaintResponseRepository {
     boolean existsByComplaintId(Long complaintId);
     List<ComplaintResponse> findPendingApprovals();
     long countByStatus(ResponseStatus status);
+    long count ();
+    List<ComplaintResponse> findAll();
 }

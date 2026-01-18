@@ -20,13 +20,11 @@ public class CustomerTools {
 
 
     @Tool(name = "getCustomerName", description = "Get customer name from complaint by ID")
-    @PreAuthorize("hasRole('ADMIN')")
     public String getCustomerName(@ToolParam(description = "Complaint ID") Long complaintId) {
-        Optional<Complaint> complaint = complaintRepository.findById(complaintId);
-        User customer = complaint.get().getCustomer();
-        if (customer != null && customer.getName() != null) {
-            return customer.getName();
-        }return "Dear ";
+        return complaintRepository.findById(complaintId)
+                .map(Complaint::getCustomer)
+                .map(User::getName)
+                .orElse("Dear Customer");
     }
 
 }
