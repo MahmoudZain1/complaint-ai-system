@@ -4,18 +4,15 @@ import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
-import com.ecommerce.complaints.model.enums.Sentiment;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import com.ecommerce.complaints.repository.jpa.ComplaintJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -52,8 +49,8 @@ public class ComplaintRepositoryImpl implements ComplaintRepository {
 
     @Override
     public Page<Complaint> findAll(ComplaintStatus status, ComplaintCategory category,
-                                   Priority priority, Sentiment sentiment, Pageable pageable) {
-        Specification<Complaint> spec = ComplaintSpecs.filtered(status, category, priority, sentiment);
+                                   Priority priority, Pageable pageable) {
+        Specification<Complaint> spec = ComplaintSpecs.filtered(status, category, priority);
         return jpaRepository.findAll(spec , pageable);
     }
 }

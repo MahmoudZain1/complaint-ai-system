@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class ComplaintSpecs {
 
     public static Specification<Complaint> filtered(ComplaintStatus status, ComplaintCategory category,
-                                                    Priority priority, Sentiment sentiment) {
+                                                    Priority priority) {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
 
@@ -23,9 +23,6 @@ public class ComplaintSpecs {
             }
             if (priority != null) {
                 predicate = cb.and(predicate, cb.equal(root.get("priority"), priority));
-            }
-            if (sentiment != null) {
-                predicate = cb.and(predicate, cb.equal(root.get("sentiment"), sentiment));
             }
             return predicate;
         };

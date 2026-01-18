@@ -4,11 +4,9 @@ import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
-import com.ecommerce.complaints.model.enums.Sentiment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ComplaintRepository {
@@ -19,5 +17,5 @@ public interface ComplaintRepository {
     void delete (Long id);
     long count();
     Page<Complaint> findAll(ComplaintStatus status, ComplaintCategory category,
-                            Priority priority, Sentiment sentiment, Pageable pageable);
+                            Priority priority, Pageable pageable);
 }

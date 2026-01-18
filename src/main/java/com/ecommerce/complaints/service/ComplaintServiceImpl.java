@@ -3,12 +3,9 @@ package com.ecommerce.complaints.service;
 import com.ecommerce.complaints.config.aspect.annotation.LogClass;
 import com.ecommerce.complaints.exception.BusinessException;
 import com.ecommerce.complaints.messaging.api.RabbitMQEventPublisher;
+import com.ecommerce.complaints.model.dto.ComplaintSearchRequest;
 import com.ecommerce.complaints.model.entity.Complaint;
 import com.ecommerce.complaints.model.entity.User;
-import com.ecommerce.complaints.model.enums.ComplaintCategory;
-import com.ecommerce.complaints.model.enums.ComplaintStatus;
-import com.ecommerce.complaints.model.enums.Priority;
-import com.ecommerce.complaints.model.enums.Sentiment;
 import com.ecommerce.complaints.model.generate.*;
 import com.ecommerce.complaints.repository.api.ComplaintRepository;
 import com.ecommerce.complaints.repository.api.UserRepository;
@@ -16,15 +13,11 @@ import com.ecommerce.complaints.service.api.ComplaintService;
 import com.ecommerce.complaints.service.mapper.ComplaintMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 import static com.ecommerce.complaints.messaging.event.ComplaintEvent.*;
 import static com.ecommerce.complaints.model.error.ComplaintErrors.*;
@@ -40,7 +33,6 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintMapper complaintMapper;
     private final RabbitMQEventPublisher eventPublisher;
     private final UserRepository userRepository;
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("id", "createdAt", "updatedAt", "status", "priority", "category", "sentiment", "subject", "customerEmail");
 
 
     @Override
@@ -94,36 +86,17 @@ public class ComplaintServiceImpl implements ComplaintService {
         eventPublisher.publishEvent(COMPLAINT_DELETED, id);
     }
 
-
-
     @Override
-    public ComplaintListVTO listComplaints(ComplaintStatus status,
-                                           ComplaintCategory category,
-                                           Priority priority,
-                                           Sentiment sentiment,
-                                           Integer page,
-                                           Integer size,
-                                           String sortBy,
-                                           String sortDirection) {
-
-        String safeSortBy = (sortBy != null && ALLOWED_SORT_FIELDS.contains(sortBy))
-                ? sortBy : "createdAt";
-
-        Sort.Direction direction = "desc".equalsIgnoreCase(sortDirection)
-                ? Sort.Direction.DESC : Sort.Direction.ASC;
-
-        Sort sort = Sort.by(direction, safeSortBy);
-
-        int pageNum = (page != null && page >= 0) ? page : 0;
-        int pageSize = (size != null && size > 0 && size <= 200) ? size : 20;
-
-        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-
-        Page<Complaint> result = complaintRepository.findAll(status, category, priority, sentiment, pageable);
-
+    public ComplaintListVTO listComplaints(ComplaintSearchRequest request) {
+        Pageable pageable = request.toPageable();
+        Page<Complaint> result = complaintRepository.findAll(
+                request.status(),
+                request.category(),
+                request.priority(),
+                pageable
+        );
         return complaintMapper.toListVTO(result);
     }
-
 
 
     public void validateComplaintCreation(ComplaintCreateDTO dto) {

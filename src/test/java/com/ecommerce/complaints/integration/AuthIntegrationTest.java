@@ -11,6 +11,7 @@ import com.ecommerce.complaints.model.generate.LoginRequest;
 import com.ecommerce.complaints.model.generate.RegisterRequest;
 import com.ecommerce.complaints.repository.api.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DisplayName("Authentication API Integration Tests")
 public class AuthIntegrationTest {
 
     @LocalServerPort
@@ -50,7 +52,7 @@ public class AuthIntegrationTest {
 
 
     @Test
-    @Sql(scripts = "classpath:sql/clear-user.sql" , executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:sql/clear-user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void register_shouldSucceed_withValidData(){
 
         RegisterRequest request = RegisterRequest.builder()

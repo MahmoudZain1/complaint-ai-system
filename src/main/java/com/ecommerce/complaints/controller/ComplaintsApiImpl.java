@@ -1,6 +1,7 @@
 package com.ecommerce.complaints.controller;
 
 import com.ecommerce.complaints.controller.api.ComplaintsApi;
+import com.ecommerce.complaints.model.dto.ComplaintSearchRequest;
 import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.ComplaintStatus;
 import com.ecommerce.complaints.model.enums.Priority;
@@ -9,7 +10,6 @@ import com.ecommerce.complaints.service.api.ComplaintService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -38,6 +38,12 @@ public class ComplaintsApiImpl implements ComplaintsApi {
         ComplaintVTO updated = complaintService.updateComplaint(id, dto);
         return ResponseEntity.ok(updated);
     }
+
+    @Override
+    public ResponseEntity<ComplaintVTO> updateComplaintStatus(Long id, UpdateComplaintStatusRequest updateComplaintStatusRequest) {
+        return null;
+    }
+
     @Override
     public ResponseEntity<ComplaintVTO> getComplaintById(Long id) {
         return ResponseEntity.ok().body(complaintService.getComplaintById(id));
@@ -45,12 +51,12 @@ public class ComplaintsApiImpl implements ComplaintsApi {
 
     @Override
     public ResponseEntity<ComplaintListVTO> listComplaints(ComplaintStatus status, ComplaintCategory category, Priority priority, Long page, Long size, String sortBy, String sortDirection) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        ComplaintSearchRequest request = new ComplaintSearchRequest(
+                status, category, priority, Math.toIntExact(page), Math.toIntExact(size), sortBy, sortDirection
+        );
+        ComplaintListVTO result = complaintService.listComplaints(request);
+        return ResponseEntity.ok(result);
     }
 
 
-    @Override
-    public ResponseEntity<ComplaintVTO> updateComplaintStatus(Long id, UpdateComplaintStatusRequest updateComplaintStatusRequest) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
-    }
 }
