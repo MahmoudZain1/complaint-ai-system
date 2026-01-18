@@ -1,12 +1,15 @@
 package com.ecommerce.complaints.common;
 
 import com.ecommerce.complaints.model.entity.Complaint;
+import com.ecommerce.complaints.model.entity.ComplaintResponse;
 import com.ecommerce.complaints.model.entity.User;
 import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.Priority;
 import com.ecommerce.complaints.model.enums.Sentiment;
 import com.ecommerce.complaints.model.enums.UserRole;
 import com.ecommerce.complaints.model.generate.*;
+
+import static com.ecommerce.complaints.model.enums.ResponseStatus.PENDING_APPROVAL;
 
 public class TestDataFactory {
 
@@ -50,6 +53,8 @@ public class TestDataFactory {
                 .subject("Original Subject")
                 .description("The product arrived broken and I am very unhappy.")
                 .customer(createSampleUser())
+                .customerName(DEFAULT_NAME)
+                .customerEmail(DEFAULT_EMAIL)
                 .build();
     }
 
@@ -70,5 +75,24 @@ public class TestDataFactory {
                 .tone("Empathetic")
                 .confidenceScore(0.95)
                 .build();
+    }
+
+    public static User createSampleManager() {
+        return User.builder()
+                .id(2L)
+                .name("Manager User")
+                .email(DEFAULT_MANAGER_EMAIL)
+                .role(UserRole.MANAGER)
+                .active(true)
+                .build();
+    }
+
+    public static ComplaintResponse createSamplePendingResponse() {
+        ComplaintResponse response = new ComplaintResponse();
+        response.setId(200L);
+        response.setComplaint(createSampleComplaint());
+        response.setStatus(PENDING_APPROVAL);
+        response.setGeneratedResponse("Sample AI response");
+        return response;
     }
 }
