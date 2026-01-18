@@ -6,10 +6,7 @@ import com.ecommerce.complaints.model.enums.ComplaintCategory;
 import com.ecommerce.complaints.model.enums.Priority;
 import com.ecommerce.complaints.model.enums.Sentiment;
 import com.ecommerce.complaints.model.enums.UserRole;
-import com.ecommerce.complaints.model.generate.ComplaintAnalysisVTO;
-import com.ecommerce.complaints.model.generate.ComplaintCreateDTO;
-import com.ecommerce.complaints.model.generate.LoginRequest;
-import com.ecommerce.complaints.model.generate.RegisterRequest;
+import com.ecommerce.complaints.model.generate.*;
 
 public class TestDataFactory {
 
@@ -65,5 +62,13 @@ public class TestDataFactory {
                 .build();
 
 
+    }
+    public static ComplaintResponseVTO createSampleResponseVTO() {
+        return ComplaintResponseVTO.builder()
+                .complaintId(100L)
+                .generatedResponse("This is a sample AI generated response.")
+                .tone("Empathetic")
+                .confidenceScore(0.95)
+                .build();
     }
 }

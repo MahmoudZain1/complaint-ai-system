@@ -33,20 +33,12 @@ import static org.mockito.Mockito.when;
 @DisplayName("Auth Service Unit Tests")
 public class AuthServiceImplTest {
 
-    @Mock
-    private UserRepository userRepository;
+    @Mock private UserRepository userRepository;
+    @Mock private UserMapper userMapper;
+    @Mock private PasswordEncoder passwordEncoder;
+    @Mock private JwtService jwtService;
 
-    @Mock
-    private UserMapper userMapper;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
-    @Mock
-    private JwtService jwtService;
-
-    @InjectMocks
-    private AuthServiceImpl authService;
+    @InjectMocks private AuthServiceImpl authService;
 
     private ArgumentCaptor<User> userArgumentCaptor;
 

@@ -93,10 +93,8 @@ public class ComplaintServiceImplTest {
     @Test
     void deleteComplaint_shouldThrowException_whenComplaintNotFound(){
         when(complaintRepository.findById(anyLong())).thenReturn(Optional.empty());
-
         assertThatThrownBy(() -> complaintService.deleteComplaint(999L))
                 .isInstanceOf(BusinessException.class);
-
         verify(complaintRepository, never()).delete(anyLong());
     }
 

@@ -34,20 +34,13 @@ import static org.mockito.Mockito.*;
 @DisplayName("Complaint Analysis Service Unit Tests")
 public class ComplaintAnalysisServiceImplTest {
 
-    @Mock
-    private ComplaintRepository complaintRepository;
-    @Mock
-    private PromptBuilderService promptBuilderService;
+    @Mock private ComplaintRepository complaintRepository;
+    @Mock private PromptBuilderService promptBuilderService;
+    @Mock private AnalysisFormatter analysisFormatter;
+    @Mock private RAGContextService ragContextService;
+    @Mock private ChatClient chatClient;
 
-    @Mock
-    private AnalysisFormatter analysisFormatter;
-    @Mock
-    private RAGContextService ragContextService;
-    @Mock
-    private ChatClient chatClient;
-
-    @Captor
-    private ArgumentCaptor<Complaint> complaintCaptor;
+    @Captor private ArgumentCaptor<Complaint> complaintCaptor;
 
     @InjectMocks
     private ComplaintAnalysisServiceImpl complaintAnalysisService;

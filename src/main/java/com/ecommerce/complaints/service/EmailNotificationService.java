@@ -99,20 +99,6 @@ public class EmailNotificationService {
         }
     }
 
-    private void sendSimpleEmail(String to, String subject, String text) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(emailConfig.getUsername());
-            message.setTo(to);
-            message.setSubject(subject);
-            message.setText(text);
-
-            mailSender.send(message);
-
-        } catch (Exception e) {
-        }
-    }
-
 
     private String buildComplaintResponseEmail(String subject, String response) {
         return String.format("""
