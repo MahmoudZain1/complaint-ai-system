@@ -1,0 +1,226 @@
+
+
+#  AI-Powered E-Commerce Complaint Management System
+
+An event-driven, AI-powered system for automating the e-commerce complaint lifecycle. Features include AI analysis, RAG-based response generation, a human-in-the-loop approval workflow, and a comprehensive multi-layered testing strategy, all containerized with Docker.
+
+
+![Java 21](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot 3](https://img.shields.io/badge/Spring_Boot-3.x-brightgreen)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)
+![Spring AI](https://img.shields.io/badge/Built%20with-Spring%20AI-6DB33F?logo=spring&logoColor=white)
+![Tests](https://img.shields.io/badge/Tests-Unit_&_Integration-green)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+
+## Table of Contents
+- [Prerequisites](#-prerequisites)
+- [Quick Start: Running Locally](#-quick-start-running-locally)
+- [API Usage Examples](#-api-usage-examples)
+- [System Overview](#-system-overview)
+- [End-to-End Workflow](#-end-to-end-workflow)
+- [Testing Strategy](#-testing-strategy)
+
+<a name="prerequisites"></a>
+
+##  Prerequisites
+
+Before running the project, ensure the following are installed on your machine.
+
+- **Core Tools:**
+  - **Docker & Docker Compose:** Required to run the entire containerized stack (App, PostgreSQL, RabbitMQ). Install from [Docker's official site](https://www.docker.com/products/docker-desktop/).
+  - **Git:** For cloning the repository.
+  - **Java 21 & Maven (Optional):** Only needed if you want to build and run the project outside of Docker.
+
+- **API Keys:**
+  - **OpenAI API Key:** Mandatory for the AI features to work. Get one from [platform.openai.com](https://platform.openai.com/api-keys).
+
+---
+
+<a name="quick-start-running-locally"></a>
+
+##  Quick Start: Running Locally
+
+The entire application stack is containerized for a simple, one-command setup.
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/MahmoudZain1/complaint-ai-system.git
+cd complaint-ai-system
+```
+
+### 2. Configure Environment Variables
+Create a `.env` file in the project's root directory. This is where you will store all your secrets.
+```bash
+touch .env
+```
+Open the `.env` file and add the following variables. **Only `API_KEY` is mandatory.**
+```markdown
+API_KEY=sk-YourSecretApiKeyHere
+BASE_URL=https://api.openai.com/v1/
+MODEL=gpt-4
+
+TE_MODEL=classpath:/models/sentence-transformers/all-MiniLM-L6-v2
+
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=complaints_db # This name is used to create the database.
+
+RABBITMQ_HOST=rabbitmq # Use 'localhost' for local development without Docker.
+RABBITMQ_PORT=5672
+RABBITMQ_USERNAME=guest
+RABBITMQ_PASSWORD=guest
+
+
+ EMAIL_PASSWORD=your-google-app-password
+```
+
+### 3. Build and Run with Docker Compose
+This command builds the application image and starts all services.
+```bash
+docker-compose up --build
+```
+The application API will be available at `http://localhost:9090`.
+
+### 4. Access Services
+
+- **RabbitMQ Console:** [`http://localhost:15672`](http://localhost:15672) (user: `guest`, pass: `guest`)
+
+---
+
+<a name="api-usage-examples"></a>
+
+##  API Usage Examples
+
+### 1. Register a New User
+```bash
+curl -X POST http://localhost:9090/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Ahmed Mohamed",
+    "email": "ahmed@example.com",
+    "password": "password123"
+  }'
+```
+
+### 2. Login and Get JWT
+```bash
+curl -X POST http://localhost:9090/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "ahmed@example.com",
+    "password": "password123"
+  }'
+```
+
+### 3. Create a New Complaint (as `ahmed@example.com`)
+```bash
+curl -X POST http://localhost:9090/complaints \
+  -H "Authorization: Bearer <YOUR_JWT_HERE>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "subject": "My order has not arrived yet",
+    "description": "I placed an order (Order #12345) two weeks ago and the tracking information has not been updated in 5 days. I am very frustrated."
+  }'
+```
+This will trigger the entire asynchronous AI workflow.
+
+---
+
+<a name="system-overview"></a>
+
+##  System Overview
+
+This project implements , event-driven system for complaint management. It accepts user complaints via a REST API, then uses a message queue (RabbitMQ) to trigger a series of asynchronous AI-powered processing steps. The core of the system is a **Retrieval-Augmented Generation (RAG)** pipeline that enriches AI prompts with contextual data from a vector database (`pg_vector`), leading to highly relevant and accurate responses. Finally, a "human-in-the-loop" workflow ensures all AI-generated responses are reviewed by a manager before being sent to the customer.
+
+---
+
+<a name="end-to-end-workflow"></a>
+
+
+##  End-to-End Workflow
+
+The entire complaint lifecycle is managed through a sophisticated, event-driven workflow:
+
+1.  **Submission & Decoupling:**
+    -   A user submits a complaint via `POST /complaints`.
+    -   The system validates the input, saves the initial `Complaint` record to PostgreSQL, and immediately publishes a `COMPLAINT_CREATED` event to a **RabbitMQ** exchange.
+    -   A `201 Created` response is instantly returned to the user, ensuring a responsive API.
+
+2.  **Asynchronous AI Analysis:**
+    -   The `AiAnalysisConsumer` picks up the event.
+    -   It calls `ComplaintAnalysisService`, which sends the complaint text to **OpenAI** for analysis (sentiment, category, priority).
+    -   The `Complaint` record in the database is updated with the AI-generated insights.
+    -   A `COMPLAINT_ANALYSIS_COMPLETED` event is published.
+
+3.  **Intelligent Response Generation (RAG Pipeline):**
+    -   The `ResponseGenerationConsumer` consumes the analysis completion event.
+    -   **Query Transformation:** The original complaint description is sent to an AI model to be **rewritten** into an optimized query, tailored for semantic search.
+    -   **Context Retrieval:** The `RAGContextService` uses the rewritten query to perform a similarity search in the **pg_vector** database, fetching relevant policy documents and similar past complaints.
+    -   **Secure Prompt Construction:** The `PromptBuilderService` assembles a rich, detailed prompt containing the original complaint, the retrieved context, and the desired output format.
+    -   **Prompt Safety Check:** Before being sent, the final prompt is intercepted by the **`SensitiveWordsAdvisor`** to scan for and block any potential prompt injection attacks.
+    -   **AI Call:** The secure prompt is sent to **OpenAI** to generate a high-quality, context-aware draft response.
+
+4.  **Approval & Finalization:**
+    -   The AI-generated response is saved to the `complaint_responses` table with a `PENDING_APPROVAL` status.
+    -   The `ResponseApprovalService` evaluates the response. If it meets the auto-approval criteria (e.g., high confidence, low priority), it is approved immediately.
+    -   If not, an email notification is sent to all `MANAGER`-level users, alerting them that a response is awaiting review.
+
+5.  **Human-in-the-Loop Review:**
+    -   A manager uses the `POST /complaints/responses/review` endpoint to **Approve**, **Edit**, or **Reject** the response.
+    -   The action is recorded, including the reviewer's ID and a timestamp.
+
+6.  **Final Communication:**
+    -   Upon approval (either manual or automatic), the `EmailNotificationService` sends the final, polished response to the customer.
+    -   The response status is updated to `SENT`, completing the lifecycle.
+
+
+---
+
+<a name="architecture"></a>
+### Mermaid Diagram
+```mermaid
+graph TD
+    subgraph "User Interaction"
+        A[Customer] -->|POST /complaints| B(API Layer)
+    end
+
+    subgraph "Core System"
+        B -->|Saves & Publishes| C[PostgreSQL]
+        B --> D[RabbitMQ]
+    end
+
+    subgraph "Background AI Pipeline"
+        D ==> E(AI Analysis Consumer)
+        E -->|Uses Spring AI| F[OpenAI API]
+        E -->|Updates| C
+
+        D ==> G(Response Generation Consumer)
+        G -->|Retrieves Context| H[RAG Service + pg_vector]
+        G -->|Generates Response| F
+        G -->|Saves 'PENDING'| C
+    end
+
+    subgraph "Approval Workflow"
+        G --> I(Approval Service)
+        I -->|If NOT Auto-Approved| J[Notify Manager via Email]
+        K[Manager] -->|POST /review| B
+        B --> I
+        I -->|On Approval| L[Send Final Email]
+    end
+
+```
+
+---
+
+<a name="testing-strategy"></a>
+
+##  Testing Strategy
+
+
+
+-   **Unit Tests:** Fast, isolated tests for all service-layer business logic, edge cases, and failure scenarios using **Mockito**. They verify the correctness of individual components without external dependencies.
+-   **Integration Tests:** Validate the full application stack, from API endpoints to database interactions, ensuring that security rules, JPA queries, and component interactions work as expected in a production-like environment.
+-   **Live E2E Tests:** A separate suite (`@Tag("live")`) connects to the **actual OpenAI API** to verify the external contract and end-to-end functionality. These are disabled by default and are run explicitly by setting the `API_KEY` environment variable.
+
+---
